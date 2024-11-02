@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "test",
-    "watch": "node --watch app.js"
+    "watch": "node --watch app.js",
+    "start": "node model/initdb.js"
   },
   "author": "Niall Antony",
   "license": "ISC",
