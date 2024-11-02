@@ -1,0 +1,14 @@
+{
+  "name": "classroommanager",
+  "version": "1.0.0",
+  "description": "A classroom manager for students grades and lessons",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Niall Antony",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}
