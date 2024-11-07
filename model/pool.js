@@ -8,7 +8,7 @@ const config = {
     port:5432
 }
 
-if (process.env.DATABASE_HOST != 'localhose') {
+if (process.env.DATABASE_HOST != 'localhost') {
     config.ssl = 'require'
 }
 

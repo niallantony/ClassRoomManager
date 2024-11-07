@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("node:path");
 
 //Routers
-
+const userRouter = require('./routes/userRouter');
 
 const app = express();
 const assetsPath = path.join(__dirname, "public");
@@ -21,6 +21,8 @@ app.set("view engine", "ejs");
 app.get('/', (req, res) => {
     res.send("Hello, World");
 })
+app.use('/user', userRouter);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
