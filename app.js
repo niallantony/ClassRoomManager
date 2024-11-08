@@ -21,6 +21,9 @@ app.set("view engine", "ejs");
 
 app.use('/', indexRouter)
 app.use('/user', userRouter);
+app.use((req, res) => {
+    res.status(404).render('layout', {title:"404", content:"partials/404"})
+})
 
 
 const PORT = process.env.PORT || 3000;

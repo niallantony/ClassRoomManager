@@ -2,11 +2,10 @@ const { body, validationResult } = require("express-validator");
 const { insertUser } = require("../model/query")
 const bcrypt = require("bcryptjs")
 
-const alphaErr = "Must only contain letters";
-
 const newUserGet = (req, res) => {
-    res.render("newUser", {
+    res.render("layout", {
         title: "New User",
+        content: "newUser",
         values: {}
     })
 }
@@ -49,8 +48,9 @@ const newUserPost = [
         if (!errors.isEmpty()) {
             console.log(req.body)
             console.log(errors)
-            return res.status(400).render("newUser", {
+            return res.status(400).render("layout", {
                 title: "New User",
+                content:"newUser",
                 errors: errors.array(),
                 values: req.body
             });

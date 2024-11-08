@@ -1,5 +1,8 @@
 const { Router } = require("express");
-const { getIndex } = require('../controller/indexController')
+const { 
+    getIndex,
+    get404,
+} = require('../controller/indexController')
 
 const indexRouter = Router();
 

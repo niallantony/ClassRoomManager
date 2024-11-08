@@ -8,6 +8,11 @@ A database for management of student grades and classes. Will allow teachers to 
 - Demonstrate logical database design
 - Practice user authentication
 
+### Possible Future Learning Points
+
+- Learn about typescript and implement it in this app
+- Use a CSS framework for alternative styling.
+
 ## Tools used
 
 - Express
@@ -29,3 +34,4 @@ A database for management of student grades and classes. Will allow teachers to 
     - [x] Create querying module
     - [ ] Test
     - [ ] Build Frontend
+        - [ ] Responsive design
