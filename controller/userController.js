@@ -12,10 +12,19 @@ const newUserGet = (req, res) => {
 }
 
 const validateUser = [
-    body("firstName").trim()
-        .isAlpha().withMessage(`First name ${alphaErr}`),
-    body("lastName").trim()
-        .isAlpha().withMessage(`Last name ${alphaErr}`),
+    // Test both names, but only throw a single error - for UI purposes.
+    body("firstName").custom((value, {req}) => {
+        const names = ['firstName','lastName'];
+        const errors = [];
+        names.forEach((name) => {
+            if (!/^[a-zA-Z]+$/.test(req.body[name])) {
+                errors.push(name);
+            }
+        });
+        if (errors.length > 0) {
+            throw new Error("Name should only use alphabetic characters")
+        }
+    }),
     body("email").trim()
         .isEmail().withMessage("Please enter a valid e-mail"),
     body("vpassword").custom((value, {req}) => {
@@ -29,7 +38,7 @@ const validateUser = [
             minLength: 8,
             minUppercase:1,
             minLowercase:1,
-            minSymbols:1 }).withMessage("Please enter a strong password (At least 8 characters, containing Uppercase, Lowercase and special characters."),
+            minSymbols:1 }).withMessage("Password should contain a mix of uppercase, lowercase and special characters"),
     
 ]
 
@@ -39,6 +48,7 @@ const newUserPost = [
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             console.log(req.body)
+            console.log(errors)
             return res.status(400).render("newUser", {
                 title: "New User",
                 errors: errors.array(),

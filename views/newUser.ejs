@@ -1,32 +1,38 @@
 <html>
     <head>
         <title><%= title %></title>
+        <link rel="stylesheet" href="/style.css">
     </head>
     <body>
-        <%- include("partials/errors") %>
-        <form method="POST">
-            <p class="info">Fields marked with a <span aria-label="required">*</span> are required.</p>
-            <fieldset class="name">
-                <legend>Name: </legend>
-                <span>
-                    <label for="firstName">First: <span aria-label="required">*</span></label>
-                    <input type="text" id="firstName" name="firstName" value='<%= values.firstName%>'>
-                </span>
-                <span>
-                    <label for="lastName">Last: <span aria-label="required">*</span></label>
-                    <input type="text" id="lastName" name="lastName" value='<%= values.lastName%>'>
-                </span>
-            </fieldset> 
-            <label for="email">Email: <span aria-label="required">*</span></label>
-            <input type="text" id="email" name="email" value='<%= values.email%>'>
-            <label for="password">Password: <span aria-label="required">*</span></label>
-            <input type="password" id="password" name="password" l-DD">
-            <label for="vpassword">Verify Password: <span aria-label="required">*</span></label>
-            <input type="password" id="vpassword" name="vpassword" l-DD">
-            <div class="buttons">
-                <button type="submit">Submit</button>
-                <a href="./..">Cancel</a> 
-            </div>
-        </form>
+        <div class="container">
+            <form method="POST">
+                <p class="info">Fields marked with a <span aria-label="required">*</span> are required</p>
+                <fieldset class="name">
+                    <legend>Name: </legend>
+                    <span>
+                        <label for="firstName">First: <span aria-label="required">*</span></label>
+                        <input type="text" id="firstName" name="firstName" value='<%= values.firstName%>'>
+                    </span>
+                    <span>
+                        <label for="lastName">Last: <span aria-label="required">*</span></label>
+                        <input type="text" id="lastName" name="lastName" value='<%= values.lastName%>'>
+                    </span>
+                </fieldset> 
+                <span class="error"><%- include('partials/errors', {errorType:"firstName"}) %></span>
+                <label for="email">Email: <span aria-label="required">*</span></label>
+                <input type="text" id="email" name="email" value='<%= values.email%>'>
+                <span class="error"><%- include('partials/errors', {errorType:"email"}) %></span>
+                <label for="password">Password: <span aria-label="required">*</span></label>
+                <input type="password" id="password" name="password" l-DD">
+                <span class="error"><%- include('partials/errors', {errorType:"password"}) %></span>
+                <label for="vpassword">Verify Password: <span aria-label="required">*</span></label>
+                <input type="password" id="vpassword" name="vpassword" l-DD">
+                <span class="error"><%- include('partials/errors', {errorType:"vpassword"}) %></span>
+                <div class="button-container">
+                    <button class="clickable" type="submit">Submit</button>
+                    <a class="clickable" href="./..">Cancel</a> 
+                </div>
+            </form>
+        </di v>
     </body>
 </html>
