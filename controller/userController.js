@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const { insertUser } = require("../model/query")
+const bcrypt = require("bcryptjs")
 
 const alphaErr = "Must only contain letters";
 
@@ -24,6 +25,7 @@ const validateUser = [
         return true;
     }),
     body("password").isStrongPassword({
+            minNumbers: 0, 
             minLength: 8,
             minUppercase:1,
             minLowercase:1,
@@ -44,8 +46,17 @@ const newUserPost = [
             });
         }
         const { firstName, lastName, email, password } = req.body;
-        insertUser(firstName, lastName, email, password);
-        console.log(`New user: ${firstName} ${lastName}`);
+        try {
+            bcrypt.hash(password, 10, async (err, hashedPassword) => {
+                if (err) {
+                    throw new Error("Hashing failed.")
+                }
+                await insertUser(firstName, lastName, email, hashedPassword)
+                console.log(`New user: ${firstName} ${lastName}`);
+            })
+        } catch (e) {
+            console.log(e);
+        }
         res.redirect('/');
     }
 ]
