@@ -94,6 +94,17 @@ h1{
     padding: 1rem 0 0 1rem;
 }
 
+.dash-form {
+    padding: 1rem;
+
+}
+
+form textarea {
+    grid-column: 1 / 3 ;
+    margin: 0 1rem;
+    padding: 1rem;
+}
+
 header {
     border-bottom: solid 1px var(--accent);
     background-color: var(--accent);
@@ -113,8 +124,16 @@ header .clickable {
     border-left:dashed 1px var(--light);
 }
 
-.dark.clickable:hover {
+.dark.clickable {
+    background-color: var(--accent);
+    color: var(--light);
+}
+
+header .clickable:hover {
     transform: none;
+}
+
+.dark.clickable:hover {
     filter:brightness(105%);
 }
 
@@ -206,6 +225,21 @@ form span.error,
 
 form span.error {
     margin: 8px 0;
+}
+
+form>label {
+    padding: 0.66rem 0;
+}
+
+input {
+    border-radius: 0;
+    color: var(--dark);
+    border: solid 1px var(--accent);
+    padding: 0.67em;
+}
+
+label {
+
 }
 
 form .button-container,

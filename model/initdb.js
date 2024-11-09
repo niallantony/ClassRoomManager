@@ -13,8 +13,11 @@ CREATE TABLE IF NOT EXISTS teachers (
     
 CREATE TABLE IF NOT EXISTS subjects (
     subject_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    teacher_id INTEGER,
+    name VARCHAR ( 255 ) NOT NULL,
     textbook VARCHAR ( 255 ),
-    description TEXT
+    description TEXT,
+    FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE CASCADE,
     );
     
 CREATE TABLE IF NOT EXISTS lessons (

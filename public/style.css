@@ -155,6 +155,18 @@ fieldset>span input {
     margin: 0;
 }
 
+
+input {
+    border-radius: 0;
+    color: var(--dark);
+    border: solid 1px var(--accent);
+    padding: 0.67em;
+}
+
+form>label {
+    padding: 0.66rem 0;
+}
+
 form span.error,
 .info {
     text-align: right;

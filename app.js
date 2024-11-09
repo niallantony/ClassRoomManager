@@ -5,6 +5,7 @@ const path = require("node:path");
 //Routers
 const userRouter = require('./routes/userRouter');
 const indexRouter = require('./routes/indexRouter');
+const subjectRouter = require('./routes/subjectRouter');
 
 const app = express();
 const assetsPath = path.join(__dirname, "public");
@@ -21,6 +22,7 @@ app.set("view engine", "ejs");
 
 app.use('/', indexRouter)
 app.use('/user', userRouter);
+app.use('/subjects', subjectRouter);
 app.use((req, res) => {
     res.status(404).render('layout', {title:"404", content:"partials/404"})
 })

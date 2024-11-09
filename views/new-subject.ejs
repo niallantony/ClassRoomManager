@@ -1,0 +1,16 @@
+<div class="dash-form">
+    <form method="POST">
+        <p class="info">Fields marked with a <span aria-label="required">*</span> are required</p>
+        <label for="name">Subject name: <span arial-label="required">*</span></label>
+        <input type="text" id="name" name="name" />
+        <span class="error"><%- include('partials/errors', {errorType:"name"}) %></span>
+        <label for="textbook">Textbook:</label>
+        <input type="text" id="textbook" name="textbook" />
+        <span class="error"><%- include('partials/errors', {errorType:"textbook"}) %></span>
+        <textarea id="description" name="description" rows="10" placeholder="Subject description..."></textarea>
+        <div class="button-container">
+            <button class="clickable dark" type="submit">Add</button>
+            <a class="clickable" href="./..">Cancel</a>
+        </div>
+    </form>
+</div>
