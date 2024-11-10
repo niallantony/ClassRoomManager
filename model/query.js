@@ -28,10 +28,26 @@ async function insertToDB(table, args) {
     }
 }
 
+async function querySingle(table, column, search) {
+    const rows = await queryAll(table, column, search);
+    return rows[0]
+}
+
+async function queryAll(table, column, search) {
+    try {
+        const sql = `SELECT * FROM ${table} WHERE ${column} = $1`;
+        const { rows } = await pool.query(sql, [search]);
+        return rows;
+    } catch (e) {
+        console.log(e);
+    }
+        
+}
+
 async function queryUser(email) {
     try {
-        const {rows} = await pool.query("SELECT * FROM teachers WHERE email = $1", [email]);
-        return rows[0];
+        const res = await querySingle("teachers", "email", email);
+        return res;
     } catch (e) {
         console.log(e);
     }
@@ -39,8 +55,8 @@ async function queryUser(email) {
 
 async function queryUserId(id) {
     try {
-        const {rows } = await pool.query("SELECT * FROM teachers WHERE teacher_id = $1", [id]);
-        return rows[0]
+        const res = await querySingle("teachers", "teacher_id", id);
+        return res;
     } catch (e) {
         console.log(e);
     }
@@ -48,16 +64,16 @@ async function queryUserId(id) {
 
 async function querySubject(id) {
     try {
-        const {rows} = await pool.query("SELECT * FROM subjects WHERE subject_id = $1", [id]);
-        return rows[0];
+        const res = await querySingle("subjects","subject_id",id)
+        return res;
     } catch (e) {
         console.log(e);
     }
 }
 
 async function querySubjects(id) {
-    const res = await pool.query("SELECT * FROM subjects WHERE teacher_id = $1", [id]);
-    return res.rows
+    const res = await queryAll("subjects", "teacher_id", id);
+    return res
 }
 
 function insertSubject(args) {
