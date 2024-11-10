@@ -222,16 +222,26 @@ form>label {
 }
 
 form input {
-    margin:  0 1rem 0;
+    margin: 0 1rem 0;
 }
 
-fieldset.name {
+form select {
+    margin: 0 1rem;
+}
+
+
+fieldset.name,
+fieldset.period {
     display: flex;
     gap: 1rem;
     border: solid 1px var(--accent);
     border-radius: 8px;
     grid-column: 1 /3;
     margin: 0 1rem;
+}
+
+fieldset.period {
+    margin-bottom: 2rem;
 }
 
 fieldset>span {

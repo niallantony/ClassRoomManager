@@ -1,0 +1,38 @@
+<div class="dash-form">
+    <form class="lesson" method="POST">
+        <p class="info">Fields marked with a <span aria-label="required">*</span> are required</p>
+        <fieldset class="period">
+            <legend>Period:</legend>
+            <span>
+                <label for="semester">Semester: <span arial-label="required">*</span></label>
+                <input type="number" min="1" max="2" value="1" id="semester" name="semester" />
+                <span class="error"><%- include('partials/errors', {errorType:"semester"}) %></span>
+            </span>
+            <span>
+                <label for="year">Year:<span aria-label="required">*</span></label>
+                <input type="text" id="year" name="year" />
+                <span class="error"><%- include('partials/errors', {errorType:"textbook"}) %></span>
+            </span>
+        </fieldset>
+        <label for="subject">Subject: <span aria-label="required">*</span></label>
+        <select id="subject" name="subject">
+            <% subjects.forEach((subject) => {%>
+                <option value="<%= subject.subject_id%>"><%= subject.name %></option>
+            <% })%>
+        </select>
+        <span class="error"><%- include('partials/errors', {errorType:"subject_id"}) %></span>
+        <label for="attendance">Attendance <span aria-label="required">*</span></label>
+        <input type="number" placeholder="20" id="attendance" name="attendance">
+        <span class="error"><%- include('partials/errors', {errorType:"attendance"}) %></span>
+        <label for="classroom">Classroom</label>
+        <input type="text" id="classroom" name="classroom">
+        <span class="error"><%- include('partials/errors', {errorType:"classroom"}) %></span>
+        <label for="class_start">Start Time:</label>
+        <input type="time" id="class_start" name="class_start">
+        <span class="error"><%- include('partials/errors', {errorType:"class_start"}) %></span>
+        <div class="button-container">
+            <button class="clickable dark" type="submit">Add</button>
+            <a class="clickable" href="/subjects">Cancel</a>
+        </div>
+    </form>
+</div>

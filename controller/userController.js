@@ -37,7 +37,6 @@ const validateUser = [
     body("firstname").trim().custom((value, {req}) => {
         const names = ['firstname','lastname'];
         const errors = [];
-        console.log(names);
         names.forEach((name) => {
             if (!/^[a-zA-Z]+$/.test(req.body[name])) {
                 errors.push(name);
@@ -72,8 +71,6 @@ const newUserPost = [
     (req,res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            console.log(req.body)
-            console.log(errors)
             return res.status(400).render("layout", {
                 title: "New User",
                 content:"new-user",

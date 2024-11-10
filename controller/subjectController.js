@@ -7,6 +7,7 @@ const {
 
 const getSubjects = async (req,res) => {
     const user = req.user;
+    console.log(user)
     const subjects = await querySubjects(user.teacher_id);
     res.render("dashboard", {
         title: "Subjects",

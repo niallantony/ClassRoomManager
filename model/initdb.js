@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS lessons (
     lesson_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     teacher_id INTEGER,
     semester SMALLINT NOT NULL,
+    year SMALLINT NOT NULL,
     subject_id INTEGER NOT NULL,
     attendance SMALLINT NOT NULL CHECK(attendance < 100),
     classroom VARCHAR,
