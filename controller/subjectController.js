@@ -7,7 +7,6 @@ const {
 
 const getSubjects = async (req,res) => {
     const user = req.user;
-    console.log(res.locals)
     const subjects = await querySubjects(user.teacher_id);
     res.render("dashboard", {
         title: "Subjects",
@@ -51,14 +50,19 @@ const newSubjectPost = [
                 values: req.body
             });
         }
-        const { name, textbook, description } = req.body;
+        const {name, textbook, description } = req.body;
         try {
-            await insertSubject(name,textbook,description,user.teacher_id);
+            await insertSubject({
+                name,
+                textbook,
+                description,
+                teacher_id: user.teacher_id
+            });
             console.log(`New Subject: ${name}`);
         } catch (e) {
             console.log(e);
         }
-        res.redirect('/');
+        res.redirect('/subjects');
     }
 ]
 

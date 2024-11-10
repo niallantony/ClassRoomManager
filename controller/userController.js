@@ -9,7 +9,7 @@ const bcrypt = require("bcryptjs")
 const newUserGet = (req, res) => {
     res.render("layout", {
         title: "New User",
-        content: "newUser",
+        content: "new-user",
         values: {}
     })
 }
@@ -18,13 +18,6 @@ const loginGet = (req, res) => {
     res.render("layout", {
         title: "Log-in",
         content: "login"
-    })
-}
-
-const loggedInGet = (req, res) => {
-    res.render("dashboard", {
-        title:"Logged In!",
-        content:"subjects"
     })
 }
 
@@ -41,20 +34,22 @@ const logoutGet = (req, res, next) => {
 
 const validateUser = [
     // Test both names, but only throw a single error - for UI purposes.
-    // body("firstName").custom((value, {req}) => {
-    //     const names = ['firstName','lastName'];
-    //     const errors = [];
-    //     console.log(names);
-    //     names.forEach((name) => {
-    //         if (!/^[a-zA-Z]+$/.test(req.body[name])) {
-    //             errors.push(name);
-    //         }
-    //     });
-    //     console.log(errors)
-    //     if (errors.length > 0) {
-    //         throw new Error("Name should only use alphabetic characters")
-    //     }
-    // }),
+    body("firstname").trim().custom((value, {req}) => {
+        const names = ['firstname','lastname'];
+        const errors = [];
+        console.log(names);
+        names.forEach((name) => {
+            if (!/^[a-zA-Z]+$/.test(req.body[name])) {
+                errors.push(name);
+            }
+        });
+        if (errors.length > 0) {
+            console.log("Throwing Error");
+            throw new Error("Name should only use alphabetic characters")
+        }
+        return true;
+    }),
+    body("lastname").trim(),
     body("email").trim()
         .isEmail().withMessage("Please enter a valid e-mail"),
     body("vpassword").custom((value, {req}) => {
@@ -81,19 +76,23 @@ const newUserPost = [
             console.log(errors)
             return res.status(400).render("layout", {
                 title: "New User",
-                content:"newUser",
+                content:"new-user",
                 errors: errors.array(),
                 values: req.body
             });
         }
-        const { firstName, lastName, email, password } = req.body;
+        const {firstname, lastname, email, password } = req.body;
         try {
             bcrypt.hash(password, 10, async (err, hashedPassword) => {
                 if (err) {
                     throw new Error("Hashing failed.")
                 }
-                await insertUser(firstName, lastName, email, hashedPassword)
-                console.log(`New user: ${firstName} ${lastName}`);
+                await insertUser({
+                    firstname,
+                    lastname,
+                    email,
+                    password: hashedPassword
+                })
             })
         } catch (e) {
             console.log(e);
@@ -106,6 +105,5 @@ module.exports = {
     newUserGet,
     newUserPost,
     loginGet,
-    loggedInGet,
     logoutGet
 }

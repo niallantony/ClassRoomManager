@@ -1,11 +1,29 @@
 const pool = require("./pool");
 
-async function insertUser(firstName, lastName, email, password) {
+function makeInsertString(table, args) {
+    let sql = `INSERT INTO ${table} (`
+    for (const key in args) {
+        sql += `${key}`;
+        if (key !== Object.keys(args)[Object.keys(args).length - 1]) {
+            sql += ',';
+        }
+    }
+    sql += ') VALUES (';
+    for (let i = 1; i <= Object.keys(args).length; i++) {
+        sql += ` \$${i}`
+        if (i !== Object.keys(args).length) {
+            sql += ',';
+        }
+    }
+    sql += ')'
+    return sql;
+}
+
+async function insertToDB(table, args) {
+    const sql = makeInsertString(table, args);
     try {
-        await pool.query("INSERT INTO teachers (firstname, lastname, email, password) VALUES ($1, $2, $3, $4)",
-            [firstName,lastName,email,password]
-        )
-    } catch (e) {
+        await pool.query(sql, Object.values(args));
+    } catch(e) {
         console.log(e)
     }
 }
@@ -42,14 +60,12 @@ async function querySubjects(id) {
     return res.rows
 }
 
-async function insertSubject(name, textbook, description, teacher_id) {
-    try {
-        await pool.query("INSERT INTO subjects (name, textbook, description, teacher_id) VALUES ($1, $2, $3, $4)",
-            [name,textbook,description,teacher_id]
-        )
-    } catch (e) {
-        console.log(e);
-    }
+function insertSubject(args) {
+    insertToDB("subjects", args);
+}
+
+function insertUser(args) {
+    insertToDB("teachers", args);
 }
 
 module.exports = {
@@ -58,5 +74,5 @@ module.exports = {
     querySubjects,
     insertSubject,
     queryUser,
-    queryUserId
+    queryUserId,
 }
