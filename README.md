@@ -29,10 +29,18 @@ A database for management of student grades and classes. Will allow teachers to 
         - [x] New subject form
         - [ ] New class form
         - [ ] New student form
-    - [ ] Create an easier way for queries to be made on the database
+    - [x] Create an easier way for queries to be made on the database
     - [x] Create log in authentication
     - [x] Create routes on backend
     - [x] Create querying module
+    - [ ] Create delete actions for subjects, classes and students
+    - [ ] Edit actions for subjects, classes and students
+    - [ ] Create remaining database actions
+        - [ ] Exams for subjects
+        - [ ] Weeks for subjects
+        - [ ] Student notes
+        - [ ] Student Exam attempts
     - [ ] Test
     - [ ] Build Frontend
         - [ ] Responsive design
+        - [ ] API & React (?)
