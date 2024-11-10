@@ -1,6 +1,11 @@
 require("dotenv").config();
 const express = require("express");
 const path = require("node:path");
+const passport = require("passport");
+const LocalStrategy = require('passport-local').Strategy;
+const session = require("express-session");
+const pool = require('./model/pool');
+
 
 //Routers
 const userRouter = require('./routes/userRouter');
@@ -16,6 +21,18 @@ process.on('uncaughtException', (err) => {
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.static(assetsPath));
+app.use(session({
+    store: new (require('connect-pg-simple')(session))({
+        pool: pool,
+    }),
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }  // 30 Days
+}));
+
+require('./configs/passport');
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");

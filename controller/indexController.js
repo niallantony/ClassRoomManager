@@ -1,18 +1,26 @@
 const getIndex = (req,res) => {
     res.render('layout', {
         title:"Niall's App",
-        content:'welcome'
+        content:'welcome',
     })
+    res.end();
 }
 
-const get404 = (req, res) => {
-    res.render('layout', {
-        title:'404',
-        content: 'partials/404'
-    })
+const getDash = (req,res, next) => {
+    if (req.user) {
+        console.log(req.user);
+        res.render('dashboard', {
+            title:"Dashboard",
+            content:'splash',
+            user:req.user,
+        })
+    } else {
+        console.log("No session found...") 
+        next();
+    }
 }
 
 module.exports = {
     getIndex,
-    get404,
+    getDash,
 }

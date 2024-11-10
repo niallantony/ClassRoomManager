@@ -37,6 +37,7 @@ h1.headline {
     --dark: #353535;
     --accent: #3C6E71;
     --light: #FFFFFF;
+    --hover: #f0f2f2;
     --light2: #A9A9A9;
     --dark-accent: #284B63;
     --error: #d46565;
@@ -215,6 +216,7 @@ fieldset>span input {
     margin: 0;
 }
 
+/* Forms */
 form span.error,
 .info {
     text-align: right;
@@ -238,16 +240,60 @@ input {
     padding: 0.67em;
 }
 
-label {
-
-}
-
 form .button-container,
 form .info,
 form .error {
     grid-column: 1 / 3;
     margin: 0;
 }
+
+/* Tables */
+
+
+table {
+    border-radius: 16px 16px 0 0;
+    width: 100%;
+    font-family: "Unna", serif;
+    border-spacing: 0;
+    border-collapse: separate;
+    overflow: hidden;
+}
+
+tr:hover {
+    background-color: var(--hover);
+}
+
+td,
+th {
+    padding: 1rem;
+    border-bottom: solid 1px var(--light2);
+}
+
+thead th {
+    border: solid 1px var(--accent);
+    font-weight: 400;
+    background-color: var(--accent);
+    color: var(--light);
+    border:0;
+    text-align: left;
+}
+
+/* Subject */
+
+.subject {
+    padding: 1rem;
+    border-radius: 10px;
+    border: solid 1px var(--accent);
+}
+
+.subject>h2 {
+    border-bottom: solid 1px var(--accent);
+    color: var(--accent);
+    font-size: 3rem;
+    margin-top:0;
+}
+
+/* Footer */
 
 footer {
     position: absolute;

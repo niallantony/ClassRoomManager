@@ -1,6 +1,10 @@
 const { body, validationResult } = require("express-validator");
-const { insertUser } = require("../model/query")
+const { 
+    insertUser,
+ } = require("../model/query")
 const bcrypt = require("bcryptjs")
+
+
 
 const newUserGet = (req, res) => {
     res.render("layout", {
@@ -10,20 +14,47 @@ const newUserGet = (req, res) => {
     })
 }
 
+const loginGet = (req, res) => {
+    res.render("layout", {
+        title: "Log-in",
+        content: "login"
+    })
+}
+
+const loggedInGet = (req, res) => {
+    res.render("dashboard", {
+        title:"Logged In!",
+        content:"subjects"
+    })
+}
+
+const logoutGet = (req, res, next) => {
+    req.session.user = null;
+    req.session.save(function(err) {
+        if (err) next(err)
+        req.session.regenerate(function(err) {
+            if (err) next(err)
+            res.redirect('/')
+        })
+    })
+}
+
 const validateUser = [
     // Test both names, but only throw a single error - for UI purposes.
-    body("firstName").custom((value, {req}) => {
-        const names = ['firstName','lastName'];
-        const errors = [];
-        names.forEach((name) => {
-            if (!/^[a-zA-Z]+$/.test(req.body[name])) {
-                errors.push(name);
-            }
-        });
-        if (errors.length > 0) {
-            throw new Error("Name should only use alphabetic characters")
-        }
-    }),
+    // body("firstName").custom((value, {req}) => {
+    //     const names = ['firstName','lastName'];
+    //     const errors = [];
+    //     console.log(names);
+    //     names.forEach((name) => {
+    //         if (!/^[a-zA-Z]+$/.test(req.body[name])) {
+    //             errors.push(name);
+    //         }
+    //     });
+    //     console.log(errors)
+    //     if (errors.length > 0) {
+    //         throw new Error("Name should only use alphabetic characters")
+    //     }
+    // }),
     body("email").trim()
         .isEmail().withMessage("Please enter a valid e-mail"),
     body("vpassword").custom((value, {req}) => {
@@ -74,4 +105,7 @@ const newUserPost = [
 module.exports = {
     newUserGet,
     newUserPost,
+    loginGet,
+    loggedInGet,
+    logoutGet
 }

@@ -10,20 +10,36 @@ async function insertUser(firstName, lastName, email, password) {
     }
 }
 
+async function queryUser(email) {
+    try {
+        const {rows} = await pool.query("SELECT * FROM teachers WHERE email = $1", [email]);
+        return rows[0];
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+async function queryUserId(id) {
+    try {
+        const {rows } = await pool.query("SELECT * FROM teachers WHERE teacher_id = $1", [id]);
+        return rows[0]
+    } catch (e) {
+        console.log(e);
+    }
+}
+
 async function querySubject(id) {
     try {
-        await pool.query("SELECT * FROM subjects WHERE subject_id = $1", [id]);
+        const {rows} = await pool.query("SELECT * FROM subjects WHERE subject_id = $1", [id]);
+        return rows[0];
     } catch (e) {
         console.log(e);
     }
 }
 
 async function querySubjects() {
-    try {
-        await pool.query("SELECT * FROM subjects");
-    } catch (e) {
-        console.log(e);
-    }
+    const res = await pool.query("SELECT * FROM subjects");
+    return res.rows
 }
 
 async function insertSubject(name, textbook, description, teacher_id) {
@@ -41,4 +57,6 @@ module.exports = {
     querySubject,
     querySubjects,
     insertSubject,
+    queryUser,
+    queryUserId
 }

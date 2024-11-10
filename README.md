@@ -26,9 +26,10 @@ A database for management of student grades and classes. Will allow teachers to 
     - [ ] Create basic forms for inputting data
         - [x] Create User form
         - [x] Encrypt Passwords (!)
-        - [ ] New subject form
+        - [x] New subject form
         - [ ] New class form
         - [ ] New student form
+    - [ ] Create an easier way for queries to be made on the database
     - [ ] Create log in authentication
     - [x] Create routes on backend
     - [x] Create querying module

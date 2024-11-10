@@ -1,3 +1,20 @@
 <div class="subjects-table">
-    Welcome to subjects
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Textbook</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% subjects.forEach(subject => { %>
+                <tr onclick="window.location='/subjects/subject/<%= subject.subject_id%>'">
+                    <td><%= subject.subject_id %></td>
+                    <td><%= subject.name %></td>
+                    <td><%= subject.textbook %></td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
 </div>

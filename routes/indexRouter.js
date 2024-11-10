@@ -1,11 +1,12 @@
 const { Router } = require("express");
 const { 
     getIndex,
-    get404,
+    getDash,
 } = require('../controller/indexController')
 
 const indexRouter = Router();
 
-indexRouter.get('/', getIndex);
+indexRouter.get('/', [getDash, getIndex]);
+indexRouter.get('/dash', [getDash, getIndex]);
 
 module.exports = indexRouter;

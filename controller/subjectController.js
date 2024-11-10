@@ -8,11 +8,22 @@ const {
 // CHANGE THIS!
 const TEST_TEACHER_ID = 3;
 
-const getSubjects = (req,res) => {
+const getSubjects = async (req,res) => {
+    const subjects = await querySubjects();
     res.render("dashboard", {
         title: "Subjects",
         content: "subjects",
-        values: {}
+        subjects: subjects,
+    })
+}
+
+const getSubject = async (req, res) => {
+    const id = req.params.id;
+    const subject = await querySubject(id)
+    res.render("dashboard", {
+        title: `Subject: ${subject.name}`,
+        content: "subject",
+        subject: subject,
     })
 }
 
@@ -55,4 +66,5 @@ module.exports = {
     getSubjects,
     newSubjectGet,
     newSubjectPost,
+    getSubject
 }
