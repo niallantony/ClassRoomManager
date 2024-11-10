@@ -5,11 +5,9 @@ const {
     insertSubject,
 } = require("../model/query");
 
-// CHANGE THIS!
-const TEST_TEACHER_ID = 3;
-
 const getSubjects = async (req,res) => {
     const user = req.user;
+    console.log(res.locals)
     const subjects = await querySubjects(user.teacher_id);
     res.render("dashboard", {
         title: "Subjects",

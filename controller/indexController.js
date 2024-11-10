@@ -9,6 +9,7 @@ const getIndex = (req,res) => {
 const getDash = (req,res, next) => {
     if (req.user) {
         console.log(req.user);
+        console.log(req.session)
         res.render('dashboard', {
             title:"Dashboard",
             content:'splash',
