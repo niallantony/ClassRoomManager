@@ -23,10 +23,11 @@ CREATE INDEX IDX_session_expire ON session (expire);
 CREATE TABLE IF NOT EXISTS subjects (
     subject_id INTEGER PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     teacher_id INTEGER,
-    name VARCHAR ( 255 ) UNIQUE NOT NULL,
+    name VARCHAR ( 255 ) NOT NULL,
     textbook VARCHAR ( 255 ),
     description TEXT,
     FOREIGN KEY (teacher_id) REFERENCES teachers(teacher_id) ON DELETE CASCADE,
+    UNIQUE (teacher_id, name)
     );
     
 CREATE TABLE IF NOT EXISTS lessons (

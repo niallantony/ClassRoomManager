@@ -9,7 +9,8 @@ const {
 const TEST_TEACHER_ID = 3;
 
 const getSubjects = async (req,res) => {
-    const subjects = await querySubjects();
+    const user = req.user;
+    const subjects = await querySubjects(user.teacher_id);
     res.render("dashboard", {
         title: "Subjects",
         content: "subjects",
@@ -42,6 +43,7 @@ const validateSubject = [
 const newSubjectPost = [
     validateSubject,
     async (req,res) => {
+        const user = req.user;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).render("dashboard", {
@@ -53,7 +55,7 @@ const newSubjectPost = [
         }
         const { name, textbook, description } = req.body;
         try {
-            await insertSubject(name,textbook,description,TEST_TEACHER_ID);
+            await insertSubject(name,textbook,description,user.teacher_id);
             console.log(`New Subject: ${name}`);
         } catch (e) {
             console.log(e);

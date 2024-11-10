@@ -37,8 +37,8 @@ async function querySubject(id) {
     }
 }
 
-async function querySubjects() {
-    const res = await pool.query("SELECT * FROM subjects");
+async function querySubjects(id) {
+    const res = await pool.query("SELECT * FROM subjects WHERE teacher_id = $1", [id]);
     return res.rows
 }
 
