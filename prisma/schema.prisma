@@ -29,9 +29,9 @@ model lessons {
   classroom   String?     @db.VarChar
   class_start DateTime    @db.Time(6)
   year        Int         @db.SmallInt
+  students    students[]
   subjects    subjects    @relation(fields: [subject_id], references: [subject_id], onDelete: NoAction, onUpdate: NoAction)
-  teachers    teachers?   @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction)
-  stud_less   stud_less[]
+  teachers    teachers?   @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction) 
 }
 
 model session {
@@ -52,15 +52,6 @@ model stud_exam {
   @@id([student_id, exam_id])
 }
 
-model stud_less {
-  student_id Int
-  lesson_id  Int
-  lessons    lessons  @relation(fields: [lesson_id], references: [lesson_id], onDelete: NoAction, onUpdate: NoAction)
-  students   students @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
-
-  @@id([student_id, lesson_id])
-}
-
 model stud_notes {
   student_id  Int
   added       DateTime @default(now()) @db.Timestamp(6)
@@ -73,8 +64,8 @@ model stud_notes {
 model students {
   student_id Int          @id
   name       String?      @db.VarChar(255)
+  lessons    lessons[]
   stud_exam  stud_exam[]
-  stud_less  stud_less[]
   stud_notes stud_notes[]
 }
 
@@ -107,7 +98,7 @@ model teachers {
   lastname   String     @db.VarChar(255)
   email      String     @unique @db.VarChar(255)
   password   String     @db.VarChar(255)
-  joined     DateTime?  @db.Timestamp(6)
+  joined     DateTime   @db.Timestamp(6) @default(now())
   lessons    lessons[]
   subjects   subjects[]
 }

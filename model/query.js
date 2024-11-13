@@ -1,87 +1,53 @@
 const pool = require("./pool");
+const { PrismaClient } = require('@prisma/client');
 
-function makeInsertString(table, args) {
-    let sql = `INSERT INTO ${table} (`
-    for (const key in args) {
-        sql += `${key}`;
-        if (key !== Object.keys(args)[Object.keys(args).length - 1]) {
-            sql += ',';
-        }
-    }
-    sql += ') VALUES (';
-    for (let i = 1; i <= Object.keys(args).length; i++) {
-        sql += ` \$${i}`
-        if (i !== Object.keys(args).length) {
-            sql += ',';
-        }
-    }
-    sql += ')'
-    return sql;
-}
-
-async function insertToDB(table, args) {
-    const sql = makeInsertString(table, args);
-    try {
-        await pool.query(sql, Object.values(args));
-    } catch(e) {
-        console.log(e)
-    }
-}
-
-async function querySingle(table, column, search) {
-    const rows = await queryAll(table, column, search);
-    return rows[0]
-}
-
-async function queryAll(table, column, search) {
-    try {
-        const sql = `SELECT * FROM ${table} WHERE ${column} = $1`;
-        const { rows } = await pool.query(sql, [search]);
-        return rows;
-    } catch (e) {
-        console.log(e);
-    }
-        
-}
+const prisma = new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'],
+})
 
 async function queryUser(email) {
-    try {
-        const res = await querySingle("teachers", "email", email);
-        return res;
-    } catch (e) {
-        console.log(e);
-    }
+    const result = await prisma.teachers.findUnique({
+        where: {
+            email: email,
+        }
+    });
+    return result;
 }
 
 async function queryUserId(id) {
-    try {
-        const res = await querySingle("teachers", "teacher_id", id);
-        return res;
-    } catch (e) {
-        console.log(e);
-    }
+    const result = await prisma.teachers.findUnique({
+        where: {
+            teacher_id: id,
+        },
+    });
+    return result;
 }
 
 async function querySubject(id) {
-    try {
-        const res = await querySingle("subjects","subject_id",id)
-        return res;
-    } catch (e) {
-        console.log(e);
-    }
+    const result = await prisma.subjects.findUnique({
+        where: {
+            subject_id: +id,
+        }
+    });
+    return result;
 }
 
 async function querySubjects(id) {
-    const res = await queryAll("subjects", "teacher_id", id);
-    return res
+    const res = await prisma.subjects.findMany({
+        where: {
+            teacher_id:id,
+        },
+    });
+    return res;
 }
 
-function insertSubject(args) {
-    insertToDB("subjects", args);
+async function insertSubject(args) {
+    const subject = await prisma.subjects.create({data:args});
 }
 
-function insertUser(args) {
-    insertToDB("teachers", args);
+async function insertUser(args) {
+    const user = await prisma.teachers.create({data:args});
+    console.log(user);
 }
 
 module.exports = {

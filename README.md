@@ -31,9 +31,11 @@ A database for management of student grades and classes. Will allow teachers to 
         - [ ] New student form
     - [x] Create an easier way for queries to be made on the database
     - [x] Create log in authentication
+        - [ ] Handle user not found
     - [x] Create routes on backend
     - [x] Create querying module
     - [ ] Create delete actions for subjects, classes and students
+    - [x] Integrate Prisma ORM for DB management
     - [ ] Edit actions for subjects, classes and students
     - [ ] Create remaining database actions
         - [ ] Exams for subjects
