@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model exams {
+  exam_id   Int         @id @default(autoincrement())
+  marks     Int
+  subject_id Int  
+  file      String?     @db.VarChar
+  percent   Int
+  type      String      @db.VarChar
+  subjects  subjects    @relation(fields: [subject_id], references: [subject_id], onDelete: Cascade, onUpdate: NoAction)
+  stud_exam stud_exam[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model lessons {
+  lesson_id   Int         @id @default(autoincrement())
+  teacher_id  Int?
+  semester    Int         @db.SmallInt
+  subject_id  Int
+  attendance  Int         @db.SmallInt
+  classroom   String?     @db.VarChar
+  class_start DateTime    @db.Time(6)
+  year        Int         @db.SmallInt
+  subjects    subjects    @relation(fields: [subject_id], references: [subject_id], onDelete: NoAction, onUpdate: NoAction)
+  teachers    teachers?   @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction)
+  stud_less   stud_less[]
+}
+
+model session {
+  sid    String   @id @db.VarChar
+  sess   Json     @db.Json
+  expire DateTime @db.Timestamp(6)
+
+  @@index([expire], map: "idx_session_expire")
+}
+
+model stud_exam {
+  student_id Int
+  exam_id    Int
+  points     Int?
+  exams      exams    @relation(fields: [exam_id], references: [exam_id], onDelete: NoAction, onUpdate: NoAction)
+  students   students @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([student_id, exam_id])
+}
+
+model stud_less {
+  student_id Int
+  lesson_id  Int
+  lessons    lessons  @relation(fields: [lesson_id], references: [lesson_id], onDelete: NoAction, onUpdate: NoAction)
+  students   students @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([student_id, lesson_id])
+}
+
+model stud_notes {
+  student_id  Int
+  added       DateTime @default(now()) @db.Timestamp(6)
+  description String?
+  students    students @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([student_id, added])
+}
+
+model students {
+  student_id Int          @id
+  name       String?      @db.VarChar(255)
+  stud_exam  stud_exam[]
+  stud_less  stud_less[]
+  stud_notes stud_notes[]
+}
+
+model subj_week {
+  subject_id  Int
+  week        Int
+  description String?
+  subjects    subjects @relation(fields: [subject_id], references: [subject_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([subject_id, week])
+}
+
+model subjects {
+  subject_id  Int         @id @default(autoincrement())
+  textbook    String?     @db.VarChar(255)
+  description String?
+  name        String      @db.VarChar(255)
+  teacher_id  Int?
+  lessons     lessons[]
+  subj_week   subj_week[]
+  exams       exams[]
+  teachers    teachers?   @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction, map: "fk_teacher_id")
+
+  @@unique([teacher_id, name], map: "unique_name_id")
+}
+
+model teachers {
+  teacher_id Int        @id @default(autoincrement())
+  firstname  String     @db.VarChar(255)
+  lastname   String     @db.VarChar(255)
+  email      String     @unique @db.VarChar(255)
+  password   String     @db.VarChar(255)
+  joined     DateTime?  @db.Timestamp(6)
+  lessons    lessons[]
+  subjects   subjects[]
+}
