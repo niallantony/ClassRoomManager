@@ -18,6 +18,7 @@ A database for management of student grades and classes. Will allow teachers to 
 - Express
 - node.js
 - PostgreSQL
+- Prisma ORM
 
 ## Current Progress
 

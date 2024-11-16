@@ -1,0 +1,30 @@
+<div class="lessons-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Period</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% lessons.forEach(lesson => { %>
+                <tr onclick="window.location='/lessons/lesson/<%=lesson.lesson_id%>'">
+                    <td><%= lesson.name %></td>
+                    <td><%= lesson.subjects.name %></td>
+                    <td><%= lesson.year %> - <%=lesson.semester%></td>
+                    <% const userLocale = navigator.language || navigator.userLanguage; %>
+                    <td><%= new Date(lesson.class_start).toLocaleTimeString(userLocale, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false
+                    })  %></td>
+                </tr>
+            <% }) %>
+            <tr class="addnew" onclick="window.location='/lessons/new'">
+                <td colspan="4">Add new...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,13 @@
+<div class="lesson">
+    <h2><%= lesson.name %></h2>
+    <a href="/subjects/subject/<%=lesson.subjects.subject_id%>"> <%=lesson.subjects.name %></a>
+    <p><%=lesson.year%> - <%=lesson.semester%></p>
+    <% const userLocale = navigator.language || navigator.userLanguage %>
+    <p><%= new Date(lesson.class_start).toLocaleTimeString(userLocale, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+    })%></p>
+    <p><%= lesson.classroom %></p>
+    <p><%=lesson.subjects.textbook%></p>
+</div>

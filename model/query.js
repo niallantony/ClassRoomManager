@@ -2,7 +2,7 @@ const pool = require("./pool");
 const { PrismaClient } = require('@prisma/client');
 
 const prisma = new PrismaClient({
-    log: ['query', 'info', 'warn', 'error'],
+    log: ['info', 'warn', 'error'],
 })
 
 async function queryUser(email) {
@@ -41,6 +41,31 @@ async function querySubjects(id) {
     return res;
 }
 
+async function queryLessons(id) {
+    const res = await prisma.lessons.findMany({
+        where:{
+            teacher_id: id,
+        },
+        include: {
+            subjects: true,
+        },
+    })
+    return res;
+}
+
+async function queryLesson(teacher_id, id) {
+    const res = await prisma.lessons.findFirst({
+        where:{
+            teacher_id:teacher_id,
+            lesson_id:id
+        },
+        include: {
+            subjects:true
+        }
+    })
+    return res;
+}
+
 async function insertSubject(args) {
     const subject = await prisma.subjects.create({data:args});
 }
@@ -50,11 +75,20 @@ async function insertUser(args) {
     console.log(user);
 }
 
+async function insertLesson(args) {
+    console.log(args);
+    const lesson = await prisma.lessons.create({data:args});
+    console.log(lesson);
+}
+
 module.exports = {
     insertUser,
+    queryLesson,
     querySubject,
     querySubjects,
     insertSubject,
+    insertLesson,
     queryUser,
     queryUserId,
+    queryLessons
 }

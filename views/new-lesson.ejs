@@ -1,34 +1,38 @@
 <div class="dash-form">
+    <h1> <%= values.name %></h1>
     <form class="lesson" method="POST">
         <p class="info">Fields marked with a <span aria-label="required">*</span> are required</p>
+        <label for="name">Name <span aria-label="required">*</span> </label>
+        <input type="text" id="name" name="name" value="<%= values.name %>">
+        <span class="error"><%- include('partials/errors', {errorType:"name"}) %> </span>
         <fieldset class="period">
             <legend>Period:</legend>
             <span>
                 <label for="semester">Semester: <span arial-label="required">*</span></label>
-                <input type="number" min="1" max="2" value="1" id="semester" name="semester" />
+                <input type="number" min="1" max="2" value=<%= values.semester || "1" %> id="semester" name="semester" />
                 <span class="error"><%- include('partials/errors', {errorType:"semester"}) %></span>
             </span>
             <span>
                 <label for="year">Year:<span aria-label="required">*</span></label>
-                <input type="text" id="year" name="year" />
+                <input type="text" id="year" name="year" value=<%= values.year || "2024" %> />
                 <span class="error"><%- include('partials/errors', {errorType:"textbook"}) %></span>
             </span>
         </fieldset>
         <label for="subject">Subject: <span aria-label="required">*</span></label>
-        <select id="subject" name="subject">
+        <select id="subject" name="subject_id">
             <% subjects.forEach((subject) => {%>
                 <option value="<%= subject.subject_id%>"><%= subject.name %></option>
             <% })%>
         </select>
         <span class="error"><%- include('partials/errors', {errorType:"subject_id"}) %></span>
         <label for="attendance">Attendance <span aria-label="required">*</span></label>
-        <input type="number" placeholder="20" id="attendance" name="attendance">
+        <input type="number" placeholder="20" id="attendance" name="attendance" value=<%= values.attendance || 20 %>>
         <span class="error"><%- include('partials/errors', {errorType:"attendance"}) %></span>
         <label for="classroom">Classroom</label>
-        <input type="text" id="classroom" name="classroom">
+        <input type="text" id="classroom" name="classroom" value="<%= values.classroom %>">
         <span class="error"><%- include('partials/errors', {errorType:"classroom"}) %></span>
         <label for="class_start">Start Time:</label>
-        <input type="time" id="class_start" name="class_start">
+        <input type="time" id="class_start" name="class_start" value="<%= values.class_start%>">
         <span class="error"><%- include('partials/errors', {errorType:"class_start"}) %></span>
         <div class="button-container">
             <button class="clickable dark" type="submit">Add</button>

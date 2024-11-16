@@ -23,6 +23,7 @@ model exams {
 model lessons {
   lesson_id   Int         @id @default(autoincrement())
   teacher_id  Int?
+  name        String
   semester    Int         @db.SmallInt
   subject_id  Int
   attendance  Int         @db.SmallInt

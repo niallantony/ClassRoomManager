@@ -318,13 +318,15 @@ thead th {
 
 /* Subject */
 
-.subject {
+.subject,
+.lesson {
     padding: 1rem;
     border-radius: 10px;
     border: solid 1px var(--accent);
 }
 
-.subject>h2 {
+.subject>h2,
+.lesson>h2 {
     border-bottom: solid 1px var(--accent);
     color: var(--accent);
     font-size: 3rem;
