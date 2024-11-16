@@ -1,6 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const { 
-    insertUser,
+    User
  } = require("../model/query")
 const bcrypt = require("bcryptjs")
 
@@ -84,7 +84,8 @@ const newUserPost = [
                 if (err) {
                     throw new Error("Hashing failed.")
                 }
-                await insertUser({
+                const db = User();
+                await db.insert({
                     firstname,
                     lastname,
                     email,

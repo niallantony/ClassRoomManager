@@ -1,14 +1,16 @@
 const { body, validationResult } = require("express-validator");
 const { 
-    querySubjects,
-    queryLessons,
-    queryLesson,
-    insertLesson,
+    Subject,
+    Lesson,
 } = require("../model/query");
+
+const subjectdb = Subject();
+const db = Lesson();
+
 
 const getLessons = async (req, res) => {
     const user = req.user;
-    const lessons = await queryLessons(user.teacher_id);
+    const lessons = await db.queryAll(user.teacher_id);
     res.render("dashboard", {
         title: "Lessons",
         content:"lessons",
@@ -19,7 +21,7 @@ const getLessons = async (req, res) => {
 const getLesson = async (req, res) => {
     const user = req.user;
     const id = +req.params.lessonid;
-    const lesson = await queryLesson(user.teacher_id, id);
+    const lesson = await db.queryId(user.teacher_id, id);
     res.render("dashboard", {
         title: lesson.name,
         content:"lesson",
@@ -29,7 +31,7 @@ const getLesson = async (req, res) => {
 
 const getNewLesson = async (req, res) => {
     const user = req.user;
-    const subjects = await querySubjects(user.teacher_id);
+    const subjects = await subjectdb.queryAll(user.teacher_id);
     res.render("dashboard", {
         title:"New Lesson",
         content:"new-lesson",
@@ -70,7 +72,7 @@ const newLessonPost = [
         const user = req.user;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const subjects = await querySubjects(user.teacher_id);
+            const subjects = await subjectdb.queryAll(user.teacher_id);
             return res.status(400).render("dashboard", {
                 title: "New Lesson",
                 content: "new-lesson",
@@ -81,7 +83,7 @@ const newLessonPost = [
         }
         const {name, semester, subject_id, attendance, classroom, class_start, year} = req.body;
         try {
-            await insertLesson({
+            await db.insert({
                 teacher_id: user.teacher_id,
                 name,
                 subject_id,
@@ -101,6 +103,5 @@ module.exports = {
     getLesson,
     getLessons,
     getNewLesson,
-    getLessons,
     newLessonPost
 }

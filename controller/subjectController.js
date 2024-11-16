@@ -1,14 +1,14 @@
 const { body, validationResult } = require("express-validator");
 const { 
-    querySubject, 
-    querySubjects,
-    insertSubject,
+    Subject,
 } = require("../model/query");
+
+const db = Subject();
 
 const getSubjects = async (req,res) => {
     const user = req.user;
     console.log(user)
-    const subjects = await querySubjects(user.teacher_id);
+    const subjects = await db.queryAll(user.teacher_id);
     res.render("dashboard", {
         title: "Subjects",
         content: "subjects",
@@ -18,7 +18,7 @@ const getSubjects = async (req,res) => {
 
 const getSubject = async (req, res) => {
     const id = req.params.id;
-    const subject = await querySubject(id)
+    const subject = await db.queryId(id)
     res.render("dashboard", {
         title: `Subject: ${subject.name}`,
         content: "subject",
@@ -53,7 +53,7 @@ const newSubjectPost = [
         }
         const {name, textbook, description } = req.body;
         try {
-            await insertSubject({
+            await db.insert({
                 name,
                 textbook,
                 description,
