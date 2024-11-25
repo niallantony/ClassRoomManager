@@ -1,8 +1,12 @@
+<% if (error) { %>
+    <%- include(`partials/error-${error}`) %>
+<% } %>
 <div class="subject">
     <h2><%= subject.name %></h2>
     <p><%= subject.textbook %></h2>
     <p><%= subject.description %></h2>
     <div class="button-container">
         <button onclick="window.location='/subjects/subject/<%= subject.subject_id%>/delete'" class="delete">Delete</button>
+        <button class="clickable" onclick="window.location='/subjects/subject/<%= subject.subject_id%>/edit'">Edit</button>
     </div>
 </div>

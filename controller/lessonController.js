@@ -47,6 +47,20 @@ const deleteLesson = async (req, res) => {
     res.redirect('/lessons');
 }
 
+const editLessonGet = async (req, res) => {
+    const id = req.params.id;
+    const user = req.user;
+    const lesson = await db.queryId(user.teacher_id,+id);
+    lesson.class_start = returnTime(lesson.class_start)
+    const subjects = await subjectdb.queryAll(user.teacher_id);
+    console.log(lesson.class_start)
+    res.render("dashboard", {
+        title: `Edit Lesson: ${lesson.name}`,
+        content: "new-lesson",
+        values: lesson,
+        subjects: subjects
+    })
+}
 
 const validateLesson = [
     body("year").trim()
@@ -67,12 +81,60 @@ const validateLesson = [
     body("semester").toInt(),
 ]
 
+
 const returnDateTime = (timeString) => {
     const timeArray = timeString.split(':');
     const dateTime = new Date();
     dateTime.setHours(timeArray[0], timeArray[1]);
     return dateTime;
 }
+
+const returnTime = (dateTime) => {
+    return `${String(dateTime.getHours()).padStart(2,'0')}:${String(dateTime.getMinutes()).padStart(2,'0')}`
+}
+
+const editLessonPost = [
+    validateLesson,
+    async (req,res) => {
+        const user = req.user;
+        const errors = validationResult(req);
+        const lesson = await db.queryId(user.teacher_id, +req.params.id)
+        if (!errors.isEmpty()) {
+            const subjects = await subjectdb.queryAll(user.teacher_id)
+            return res.status(400).render("dashboard", {
+                title: `Edit Lesson: ${lesson.name}`,
+                content:"new-lesson",
+                errors: errors.array(),
+                subjects:subjects,
+                values: req.body
+            });
+        }
+        const {
+            name,
+            semester,
+            subject_id,
+            attendance,
+            classroom,
+            class_start,
+            year
+        } = req.body;
+        try {
+            await db.update(+req.params.id, {
+                name,
+                semester,
+                subject_id,
+                attendance,
+                classroom,
+                class_start: returnDateTime(class_start),
+                year,
+            })
+        res.redirect(`/lessons/lesson/${req.params.id}`)
+        } catch (e) {
+            console.log(e)
+        }
+
+    }
+]
 
 const newLessonPost = [
     validateLesson,
@@ -108,6 +170,8 @@ const newLessonPost = [
 ]
 
 module.exports = {
+    editLessonGet,
+    editLessonPost,
     deleteLesson,
     getLesson,
     getLessons,

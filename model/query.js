@@ -48,7 +48,22 @@ const Subject = () => {
         }
     }
 
+    const update = async (id, args) => {
+        try {
+            const res = await prisma.subjects.update({
+                where: {
+                    subject_id: +id,
+                },
+                data: args
+            })
+            return res;
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     return {
+        update,
         deleteId,
         queryId,
         queryAll,
@@ -96,8 +111,23 @@ const Lesson = () => {
         })
         return lesson
     }
+    
+    const update = async (id, args) => {
+        try {
+            const res = await prisma.lessons.update({
+                where: {
+                    lesson_id: id,
+                },
+                data: args
+            })
+            return res
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     return {
+        update,
         deleteId,
         queryAll,
         queryId,
@@ -139,8 +169,20 @@ const User = () => {
 
 }
 
+const Exam = () => {
+    const insert = async (args) => {
+        const exam = await prisma.exams.create({data:args});
+        return exam;
+    }
+
+    return {
+        insert,
+    }
+}
+
 module.exports = {
     Subject,
     Lesson,
     User,
+    Exam,
 }

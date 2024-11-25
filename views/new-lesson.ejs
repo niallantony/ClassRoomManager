@@ -15,7 +15,7 @@
             <span>
                 <label for="year">Year:<span aria-label="required">*</span></label>
                 <input type="text" id="year" name="year" value=<%= values.year || "2024" %> />
-                <span class="error"><%- include('partials/errors', {errorType:"textbook"}) %></span>
+                <span class="error"><%- include('partials/errors', {errorType:"year"}) %></span>
             </span>
         </fieldset>
         <label for="subject">Subject: <span aria-label="required">*</span></label>
@@ -36,7 +36,7 @@
         <span class="error"><%- include('partials/errors', {errorType:"class_start"}) %></span>
         <div class="button-container">
             <button class="clickable dark" type="submit">Add</button>
-            <a class="clickable" href="/subjects">Cancel</a>
+            <a class="clickable" href="/lessons">Cancel</a>
         </div>
     </form>
 </div>

@@ -332,6 +332,9 @@ thead th {
     border: solid 1px var(--accent);
 }
 
+.error {
+    color: var(--error);
+}
 .subject>h2,
 .lesson>h2 {
     border-bottom: solid 1px var(--accent);

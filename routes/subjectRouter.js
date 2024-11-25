@@ -4,7 +4,9 @@ const {
     newSubjectGet,
     newSubjectPost,
     getSubject,
-    deleteSubject
+    deleteSubject,
+    editSubjectGet,
+    editSubjectPost
  } = require("../controller/subjectController");
 
 const subjectRouter = Router();
@@ -14,5 +16,7 @@ subjectRouter.get('/new', newSubjectGet);
 subjectRouter.post('/new', newSubjectPost);
 subjectRouter.get('/subject/:id', getSubject);
 subjectRouter.get('/subject/:id/delete', deleteSubject)
+subjectRouter.get('/subject/:id/edit', editSubjectGet)
+subjectRouter.post('/subject/:id/edit', editSubjectPost)
 
 module.exports = subjectRouter;

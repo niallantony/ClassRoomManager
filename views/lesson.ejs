@@ -11,6 +11,7 @@
     <p><%= lesson.classroom %></p>
     <p><%=lesson.subjects.textbook%></p>
     <div class="button-container">
+        <button class="clickable" onclick="window.location='/lessons/lesson/<%= lesson.lesson_id%>/edit'">Edit</button>
         <button class="delete" onclick="window.location='/lessons/lesson/<%= lesson.lesson_id %>/delete'">Delete</button>
     </div>
 </div>
