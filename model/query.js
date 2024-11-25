@@ -1,3 +1,4 @@
+const { PrismaClientKnownRequestError } = require("@prisma/client/runtime/library");
 const pool = require("./pool");
 const { PrismaClient } = require('@prisma/client');
 
@@ -29,7 +30,26 @@ const Subject = () => {
         return subject
     }
 
+    const deleteId = async (id) => {
+        try {
+            const res = await prisma.subjects.delete({
+                where: {
+                    subject_id:+id,
+                }
+            })
+            return res
+        } catch (e) {
+            if (e instanceof PrismaClientKnownRequestError) {
+                if (e.code === 'P2003') {
+                    throw e
+                }
+            }
+            console.log(e)
+        }
+    }
+
     return {
+        deleteId,
         queryId,
         queryAll,
         insert,
@@ -68,7 +88,17 @@ const Lesson = () => {
         console.log(lesson);
     }
 
+    const deleteId = async (id) => {
+        const lesson = await prisma.lessons.delete({
+            where: {
+                lesson_id:+id,
+            }
+        })
+        return lesson
+    }
+
     return {
+        deleteId,
         queryAll,
         queryId,
         insert

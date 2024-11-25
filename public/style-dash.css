@@ -156,6 +156,12 @@ h1{
 
 /* Buttons */ 
 
+.button-container .delete {
+    color: var(--light);
+    border:0;
+    background-color: var(--error);
+}
+
 .dark.clickable {
     background-color: var(--accent);
     color: var(--light);
@@ -170,7 +176,8 @@ h1{
 }
 
 
-.clickable {
+.clickable,
+.delete {
     font-family: "Unna",serif;
     font-size: 1rem;
     border: 0; 

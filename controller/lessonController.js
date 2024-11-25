@@ -20,7 +20,7 @@ const getLessons = async (req, res) => {
 
 const getLesson = async (req, res) => {
     const user = req.user;
-    const id = +req.params.lessonid;
+    const id = +req.params.id;
     const lesson = await db.queryId(user.teacher_id, id);
     res.render("dashboard", {
         title: lesson.name,
@@ -39,6 +39,14 @@ const getNewLesson = async (req, res) => {
         subjects:subjects,
     })
 }
+
+const deleteLesson = async (req, res) => {
+    const id = req.params.id;
+    const response = await db.deleteId(id);
+    console.log(response);
+    res.redirect('/lessons');
+}
+
 
 const validateLesson = [
     body("year").trim()
@@ -100,6 +108,7 @@ const newLessonPost = [
 ]
 
 module.exports = {
+    deleteLesson,
     getLesson,
     getLessons,
     getNewLesson,

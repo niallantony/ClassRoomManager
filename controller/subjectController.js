@@ -7,7 +7,6 @@ const db = Subject();
 
 const getSubjects = async (req,res) => {
     const user = req.user;
-    console.log(user)
     const subjects = await db.queryAll(user.teacher_id);
     res.render("dashboard", {
         title: "Subjects",
@@ -24,6 +23,20 @@ const getSubject = async (req, res) => {
         content: "subject",
         subject: subject,
     })
+}
+
+const deleteSubject = async (req, res) => {
+    try {
+
+        const id = req.params.id;
+        
+        const response = await db.deleteId(id);
+        console.log(response);
+        res.redirect('/subjects');
+    } catch (e) {
+        console.log("Subject cannot be deleted if Lessons exist")
+        res.redirect('/subjects');
+    }
 }
 
 const newSubjectGet = (req, res) => {
@@ -68,6 +81,7 @@ const newSubjectPost = [
 ]
 
 module.exports = {
+    deleteSubject,
     getSubjects,
     newSubjectGet,
     newSubjectPost,

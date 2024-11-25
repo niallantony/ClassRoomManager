@@ -28,7 +28,7 @@ A database for management of student grades and classes. Will allow teachers to 
         - [x] Create User form
         - [x] Encrypt Passwords (!)
         - [x] New subject form
-        - [ ] New class form
+        - [x] New class form
         - [ ] New student form
     - [x] Create an easier way for queries to be made on the database
     - [x] Create log in authentication
@@ -36,6 +36,7 @@ A database for management of student grades and classes. Will allow teachers to 
     - [x] Create routes on backend
     - [x] Create querying module
     - [ ] Create delete actions for subjects, classes and students
+        - [ ] Handle 'Cannot Delete Subject with Lessons'
     - [x] Integrate Prisma ORM for DB management
     - [ ] Edit actions for subjects, classes and students
     - [ ] Create remaining database actions
@@ -45,5 +46,6 @@ A database for management of student grades and classes. Will allow teachers to 
         - [ ] Student Exam attempts
     - [ ] Test
     - [ ] Build Frontend
+        - [ ] Dashboard Home Screen
         - [ ] Responsive design
         - [ ] API & React (?)
