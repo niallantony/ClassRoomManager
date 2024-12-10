@@ -5,6 +5,29 @@
     <h2><%= subject.name %></h2>
     <p><%= subject.textbook %></h2>
     <p><%= subject.description %></h2>
+    <div class="nested-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Exams</th>
+                    <th>Marks</th>
+                    <th>Percent</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% subject.exams.forEach(exam => { %>
+                    <tr onclick="window.location='/subjects/subject/<%= subject.subject_id%>/exam/<%=exam.exam_id%>'">
+                        <td><%= exam.name %></td>
+                        <td><%= exam.marks %></td>
+                        <td><%= exam.percent %>%</td>
+                    </tr>
+                <% }) %>
+                <tr class="addnew" onclick="window.location='/subjects/subject/<%= subject.subject_id%>/new-exam'">
+                    <td colspan="4">Add new...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     <div class="button-container">
         <button onclick="window.location='/subjects/subject/<%= subject.subject_id%>/delete'" class="delete">Delete</button>
         <button class="clickable" onclick="window.location='/subjects/subject/<%= subject.subject_id%>/edit'">Edit</button>

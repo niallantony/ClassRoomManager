@@ -1,0 +1,24 @@
+<h1><%= title %></h1>
+<form method="POST">
+    <p class="info">Fields marked with a <span aria-label="required">*</span> are required</p>
+    <label for="name">Name: <span aria-label="required">*</span></label>
+    <input type="text" id="name" name="name" value='<%= values.name%>'>
+    <span class="error"><%- include('partials/errors', {errorType:"name"}) %></span>
+    <label for="marks">Marks: <span aria-label="required">*</span></label>
+    <input type="text" id="marks" name="marks" value="<%= values.marks%>">
+    <span class="error"><%- include('partials/errors', {errorType:"marks"}) %></span>
+    <label for="percent">percent: <span aria-label="required">*</span></label>
+    <input type="text" id="percent" name="percent" value="<%= values.percent%>">
+    <span class="error"><%- include('partials/errors', {errorType:"percent"}) %></span>
+    <label for="type">Type: <span aria-label="required">*</span></label>
+    <select id="type" name="type">
+        <option value="exam">Exam</option>
+        <option value="assignment">Assignment</option>
+    </select>
+    <span class="error"><%- include('partials/errors', {errorType:"type"}) %></span>
+    <div class="button-container">
+        <button class="clickable" type="submit">Submit</button>
+        <a class="clickable" href="/subjects">Cancel</a> 
+    </div>
+
+</form>

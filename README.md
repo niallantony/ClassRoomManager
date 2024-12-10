@@ -44,6 +44,8 @@ A database for management of student grades and classes. Will allow teachers to 
         - [ ] Weeks for subjects
         - [ ] Student notes
         - [ ] Student Exam attempts
+        - [ ] Active lessons for each class
+        - [ ] Upload CSV for students (?)
     - [ ] Test
     - [ ] Build Frontend
         - [ ] Dashboard Home Screen

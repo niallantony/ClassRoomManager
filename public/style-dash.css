@@ -323,6 +323,21 @@ thead th {
     text-align: left;
 }
 
+.nested-table {
+    padding: 1rem;
+}
+
+.nested-table table {
+    border-top: solid 1px var(--accent);
+    border-radius: 0;
+}
+
+.nested-table table th {
+    border-bottom: solid 1px var(--accent);
+    background-color: var(--light);
+    color: var(--accent);
+}
+
 /* Subject */
 
 .subject,

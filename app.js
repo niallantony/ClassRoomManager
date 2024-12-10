@@ -51,6 +51,10 @@ app.use('/', indexRouter)
 app.use('/user', userRouter);
 app.use('/subjects', subjectRouter);
 app.use('/lessons', lessonRouter);
+app.use((req, res, next) => {
+    console.log(`Request URL: ${req.url}`);
+        next();
+})
 app.use((req, res) => {
     res.status(404).render('layout', {title:"404", content:"partials/404"})
 })

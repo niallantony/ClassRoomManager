@@ -16,6 +16,24 @@ const Subject = () => {
         });
         return result;
     }
+    const queryIdWithExams = async (id) => {
+        const result = await prisma.subjects.findUnique({
+            where: {
+                subject_id: +id,
+            },
+            include: {
+                exams: {
+                    select: {
+                        exam_id:true,
+                        name: true,
+                        marks: true,
+                        percent: true
+                    }
+                }
+            }
+        })
+        return result
+    }
     const queryAll = async (id) => {
         const res = await prisma.subjects.findMany({
             where: {
@@ -66,6 +84,7 @@ const Subject = () => {
         update,
         deleteId,
         queryId,
+        queryIdWithExams,
         queryAll,
         insert,
     }
@@ -171,12 +190,52 @@ const User = () => {
 
 const Exam = () => {
     const insert = async (args) => {
+        console.log(args)
         const exam = await prisma.exams.create({data:args});
         return exam;
     }
 
+    const queryId = async (id) => {
+        const result = await prisma.exams.findUnique({
+            where: {
+                exam_id: +id,
+            },
+            include: {
+                subjects:true,
+            }
+        })
+        return result
+    }
+
+    const update = async (id, args) => {
+        try {
+            const res = await prisma.exams.update({
+                where: {
+                    exam_id:id,
+                },
+                data:args
+            })
+            return res
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
+    const deleteId = async (id) => {
+        console.log("Delete: ",id)
+        const res = await prisma.exams.delete({
+            where: {
+                exam_id:+id
+            }
+        })
+        return res
+    }
+
     return {
+        update,
         insert,
+        queryId,
+        deleteId,
     }
 }
 
