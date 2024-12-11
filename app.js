@@ -12,6 +12,7 @@ const userRouter = require('./routes/userRouter');
 const indexRouter = require('./routes/indexRouter');
 const subjectRouter = require('./routes/subjectRouter');
 const lessonRouter = require('./routes/lessonRouter');
+const studentRouter = require('./routes/studentRouter');
 
 const app = express();
 const assetsPath = path.join(__dirname, "public");
@@ -51,6 +52,7 @@ app.use('/', indexRouter)
 app.use('/user', userRouter);
 app.use('/subjects', subjectRouter);
 app.use('/lessons', lessonRouter);
+app.use('/students', studentRouter);
 app.use((req, res, next) => {
     console.log(`Request URL: ${req.url}`);
         next();

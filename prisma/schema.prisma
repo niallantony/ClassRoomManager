@@ -66,9 +66,11 @@ model stud_notes {
 model students {
   student_id Int          @id
   name       String?      @db.VarChar(255)
+  teacher_id Int?         
   lessons    lessons[]
   stud_exam  stud_exam[]
   stud_notes stud_notes[]
+  teachers   teachers?    @relation(fields: [teacher_id], references: [teacher_id], onDelete: Cascade, onUpdate: NoAction)
 }
 
 model subj_week {
@@ -103,4 +105,5 @@ model teachers {
   joined     DateTime   @default(now()) @db.Timestamp(6)
   lessons    lessons[]
   subjects   subjects[]
+  students   students[]
 }

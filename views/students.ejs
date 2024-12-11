@@ -1,0 +1,21 @@
+<div class="students-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Student ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% students.forEach(student => { %>
+                <tr onclick="window.location="">
+                    <td><%= student.name %></td>
+                    <td><%= student.student_id %></td>
+                </tr>
+            <% }) %>
+            <tr class="addnew" onclick="window.location='/students/new'">
+                <td colspan="4">Add new...</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

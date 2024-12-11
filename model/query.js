@@ -103,6 +103,19 @@ const Lesson = () => {
         return res;
     }
     
+    const getNames = async (id) => {
+        const res = await prisma.lessons.findMany({
+            where:{
+                teacher_id: id,
+            },
+            select: {
+                name:true,
+                lesson_id: true,
+            }
+        })
+        return res
+    }
+    
     const queryId = async (teacher_id, id) => {
         const res = await prisma.lessons.findFirst({
             where:{
@@ -146,6 +159,7 @@ const Lesson = () => {
     }
 
     return {
+        getNames,
         update,
         deleteId,
         queryAll,
@@ -239,9 +253,97 @@ const Exam = () => {
     }
 }
 
+const Student = () => {
+    const insert = async (args) => {
+        const res = await prisma.students.create({
+            data: {
+                name: args.name,
+                student_id: args.student_id,
+                teacher_id: args.teacher_id,
+                lessons: {
+                    connect: [
+                        { lesson_id: args.lesson_id }
+                    ]
+                }
+            }
+        })
+        return res
+    }
+
+    const queryExists = async (id) => {
+        const res = await prisma.students.findUnique({
+            where: {
+                student_id: id,
+            }
+        })
+        return res
+    }
+    
+    const queryId = async (teacher_id,id) => {
+        const res = await prisma.students.findUnique({
+            where: {
+                student_id: id,
+                teacher_id: teacher_id
+            },
+            include: {
+                lessons:true
+            }
+        })
+        return res
+    }
+    
+    const update = async (teacher_id,id, args) => {
+        const res = await prisma.students.update({
+            where: {
+                student_id: id,
+                teacher_id: teacher_id
+            },
+            data: {
+                name: args.name,
+            }
+        })
+        return res
+    }
+
+    const getInLesson = async (lesson_id) => {
+        const res = await prisma.students.findMany({
+            where: {
+                lessons : {
+                    some: {
+                        lesson_id: lesson_id
+                    }
+                }
+            },
+            include: {
+                lessons:true
+            },
+        })
+        return res
+    }
+
+    const deleteId = async (teacher_id, student_id) => {
+        const res = await prisma.students.delete({
+            where: {
+                teacher_id: teacher_id,
+                student_id: student_id
+            }
+        })
+        return res
+    }
+    return {
+        deleteId,
+        insert,
+        queryId,
+        getInLesson,
+        queryExists,
+        update,
+    }
+}
+
 module.exports = {
     Subject,
     Lesson,
     User,
     Exam,
+    Student,
 }

@@ -2,11 +2,12 @@ const { body, validationResult } = require("express-validator");
 const { 
     Subject,
     Lesson,
+    Student,
 } = require("../model/query");
 
 const subjectdb = Subject();
 const db = Lesson();
-
+const student_db = Student();
 
 const getLessons = async (req, res) => {
     const user = req.user;
@@ -22,9 +23,11 @@ const getLesson = async (req, res) => {
     const user = req.user;
     const id = +req.params.id;
     const lesson = await db.queryId(user.teacher_id, id);
+    const students = await student_db.getInLesson(lesson.lesson_id)
     res.render("dashboard", {
         title: lesson.name,
         content:"lesson",
+        students:students,
         lesson:lesson,
     })
 }
@@ -163,6 +166,7 @@ const newLessonPost = [
                 year,
                 semester,
             })
+        res.redirect('/lessons')
         } catch (e) {
             console.log(e)
         }

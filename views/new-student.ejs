@@ -1,0 +1,23 @@
+<h1><%= title %></h1>
+<div class="dash-form">
+    <form class="lesson" method="POST">
+        <p class="info">Fields marked with a <span aria-label="required">*</span> are required</p>
+        <label for="name">Name <span aria-label="required">*</span> </label>
+        <input type="text" id="name" name="name" value="<%= values.name %>">
+        <span class="error"><%- include('partials/errors', {errorType:"name"}) %> </span>
+        <label for="student_id">Student ID <span aria-label="required">*</span> </label>
+        <input type="text" id="student_id" name="student_id" value="<%= values.student_id %>">
+        <span class="error"><%- include('partials/errors', {errorType:"student_id"}) %> </span>
+        <label for="lesson">Lesson: <span aria-label="required">*</span></label>
+        <select id="lesson" name="lesson_id">
+            <% lessons.forEach((lesson) => {%>
+                <option value="<%= lesson.lesson_id%>"><%= lesson.name %></option>
+            <% })%>
+        </select>
+        <span class="error"><%- include('partials/errors', {errorType:"lesson_id"}) %></span>
+        <div class="button-container">
+            <button class="clickable dark" type="submit">Add</button>
+            <a class="clickable" href="/lessons">Cancel</a>
+        </div>
+    </form>
+</div>
