@@ -17,9 +17,17 @@ const {
 
 const subjectRouter = Router();
 
-subjectRouter.get('/', getSubjects);
-subjectRouter.get('/new', newSubjectGet);
-subjectRouter.post('/new', newSubjectPost);
+const authenticateUser = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        return res.status(401).send({message: 'Unauthorised'});
+    }
+};
+
+subjectRouter.get('/', authenticateUser, getSubjects);
+subjectRouter.get('/new', authenticateUser, newSubjectGet);
+subjectRouter.post('/new', authenticateUser, newSubjectPost);
 subjectRouter.get('/subject/:id', getSubject);
 subjectRouter.get('/subject/:id/delete', deleteSubject)
 subjectRouter.get('/subject/:id/edit', editSubjectGet)

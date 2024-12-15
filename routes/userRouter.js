@@ -3,7 +3,6 @@ const {
     newUserGet, 
     newUserPost,
     loginGet,
-    loggedInGet,
     logoutGet
 } = require("../controller/userController")
 const passport = require('passport');

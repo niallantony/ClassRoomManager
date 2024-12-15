@@ -10,7 +10,11 @@ const exam_db = Exam();
 const getSubjects = async (req,res) => {
     const user = req.user;
     const subjects = await db.queryAll(user.teacher_id);
-    return res.send(subjects)
+    console.log("Subjects: ",subjects)    
+
+    return res.json({
+        subjects:subjects
+    })
 }
 
 const getSubject = async (req, res) => {
@@ -129,12 +133,7 @@ const newSubjectPost = [
         const user = req.user;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).render("dashboard", {
-                title: "New Subject",
-                content: "new-subject",
-                errors: errors.array(),
-                values: req.body
-            });
+            return res.status(400).send(errors)
         }
         const {name, textbook, description } = req.body;
         try {
@@ -145,10 +144,14 @@ const newSubjectPost = [
                 teacher_id: user.teacher_id
             });
             console.log(`New Subject: ${name}`);
+            res.json({message: "Successful"});
         } catch (e) {
             console.log(e);
+            res.json({
+                message: "Unsuccessful",
+                error: e,
+            })
         }
-        res.redirect('/subjects');
     }
 ]
 
