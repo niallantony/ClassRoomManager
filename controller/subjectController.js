@@ -10,11 +10,7 @@ const exam_db = Exam();
 const getSubjects = async (req,res) => {
     const user = req.user;
     const subjects = await db.queryAll(user.teacher_id);
-    res.render("dashboard", {
-        title: "Subjects",
-        content: "subjects",
-        subjects: subjects,
-    })
+    return res.send(subjects)
 }
 
 const getSubject = async (req, res) => {

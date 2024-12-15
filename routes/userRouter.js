@@ -17,7 +17,7 @@ router.get('/login', loginGet);
 router.post('/login', 
     passport.authenticate("local", {
         successRedirect:'/dash',
-        failureRedirect:'/no'
+        failureRedirect:'/notfound'
     }) 
 );
 router.get('/logout', logoutGet);

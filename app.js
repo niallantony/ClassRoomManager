@@ -5,6 +5,7 @@ const passport = require("passport");
 const LocalStrategy = require('passport-local').Strategy;
 const session = require("express-session");
 const pool = require('./model/pool');
+const cors = require('cors');
 
 
 //Routers
@@ -15,21 +16,29 @@ const lessonRouter = require('./routes/lessonRouter');
 const studentRouter = require('./routes/studentRouter');
 
 const app = express();
-const assetsPath = path.join(__dirname, "public");
 
 process.on('uncaughtException', (err) => {
     console.log(err);
 })
 
-app.use(express.urlencoded({extended:true}));
-app.use(express.static(assetsPath));
+app.use(cors({
+    origin:"http://localhost:5173",
+    credentials:true
+}))
+app.use(express.json());
 app.use(session({
     store: new (require('connect-pg-simple')(session))({
         pool: pool,
     }),
+    saveUninitialized:false,
     secret: process.env.COOKIE_SECRET,
     resave: false,
-    cookie: { maxAge: 30 * 24 * 60 * 60 * 1000 }  // 30 Days
+    cookie: { 
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        secure: process.env.NODE_ENV === 'production',
+        httpOnly: true,
+        sameSite: 'lax',
+     }  // 30 Days
 }));
 
 require('./configs/passport');
@@ -45,20 +54,14 @@ app.use((req, res, next) => {
     next();
 })
 
-app.set("views", path.join(__dirname, "views"));
-app.set("view engine", "ejs");
 
 app.use('/', indexRouter)
 app.use('/user', userRouter);
 app.use('/subjects', subjectRouter);
 app.use('/lessons', lessonRouter);
 app.use('/students', studentRouter);
-app.use((req, res, next) => {
-    console.log(`Request URL: ${req.url}`);
-        next();
-})
 app.use((req, res) => {
-    res.status(404).render('layout', {title:"404", content:"partials/404"})
+    res.status(404).send({title:"404", content:"partials/404"})
 })
 
 

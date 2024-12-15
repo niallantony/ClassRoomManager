@@ -6,7 +6,15 @@ const {
 
 const indexRouter = Router();
 
-indexRouter.get('/', [getDash, getIndex]);
-indexRouter.get('/dash', [getDash, getIndex]);
+const authenticateUser = (req, res, next) => {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        return res.status(401).send({message: 'Unauthorised'});
+    }
+};
+
+indexRouter.get('/', [authenticateUser,getDash, getIndex]);
+indexRouter.get('/dash', [authenticateUser,getDash, getIndex]);
 
 module.exports = indexRouter;
