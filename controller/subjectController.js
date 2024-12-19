@@ -19,13 +19,12 @@ const getSubjects = async (req,res) => {
 
 const getSubject = async (req, res) => {
     const id = req.params.id;
-    const subject = await db.queryIdWithExams(id);
+    const teacher_id = req.user.teacher_id
+    const subject = await db.queryIdWithExams(teacher_id,id);
     const error = req.query.error || null
-    res.render("dashboard", {
-        title: `Subject: ${subject.name}`,
-        content: "subject",
-        subject: subject,
-        error:error,
+    res.json({
+        subject:subject,
+        error:error
     })
 }
 
@@ -43,11 +42,14 @@ const deleteSubject = async (req, res) => {
     try {
         const id = req.params.id;
         const response = await db.deleteId(id);
-        console.log(response);
-        res.redirect('/subjects');
+        res.json({
+            message:"Successful",
+        });
     } catch (e) {
         console.log("Subject cannot be deleted if Lessons exist")
-        res.redirect(`/subjects/subject/${req.params.id}?error=delete`)
+        res.status(400).json({
+            error:e
+        })
     }
 }
 
@@ -105,24 +107,24 @@ const editSubjectPost = [
         const id = req.params.id;
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).render("dashboard", {
-                title: `Edit Subject ${req.body.name}`,
-                content: "new-subject",
-                errors: errors.array(),
-                values: req.body
-            });
+            res.status(400).json({
+                errors: errors
+            })
         }
+        const user = req.user;
         const {name, textbook, description} = req.body;
         try {
-            await db.update(id, {
+            await db.update(user.teacher_id, id, {
                 name,
                 textbook,
                 description
             });
+            res.json({
+                message:"Successful"
+            })
         } catch (e) {
             console.log(e);
         }
-        res.redirect(`/subjects/subject/${id}`)
     }
 ]
 

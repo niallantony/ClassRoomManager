@@ -29,9 +29,8 @@ subjectRouter.get('/', authenticateUser, getSubjects);
 subjectRouter.get('/new', authenticateUser, newSubjectGet);
 subjectRouter.post('/new', authenticateUser, newSubjectPost);
 subjectRouter.get('/subject/:id', getSubject);
-subjectRouter.get('/subject/:id/delete', deleteSubject)
-subjectRouter.get('/subject/:id/edit', editSubjectGet)
-subjectRouter.post('/subject/:id/edit', editSubjectPost)
+subjectRouter.put('/subject/:id', editSubjectPost);
+subjectRouter.delete('/subject/:id', deleteSubject)
 subjectRouter.get('/subject/:id/exam/:exam_id', getExam)
 subjectRouter.get('/subject/:id/new-exam', newExamGet)
 subjectRouter.post('/subject/:id/new-exam', newExamPost)

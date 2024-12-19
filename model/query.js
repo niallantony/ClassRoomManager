@@ -16,10 +16,11 @@ const Subject = () => {
         });
         return result;
     }
-    const queryIdWithExams = async (id) => {
+    const queryIdWithExams = async (teacher_id,id) => {
         const result = await prisma.subjects.findUnique({
             where: {
                 subject_id: +id,
+                teacher_id: +teacher_id
             },
             include: {
                 exams: {
@@ -66,11 +67,12 @@ const Subject = () => {
         }
     }
 
-    const update = async (id, args) => {
+    const update = async (teacher_id, id, args) => {
         try {
             const res = await prisma.subjects.update({
                 where: {
                     subject_id: +id,
+                    teacher_id: +teacher_id,
                 },
                 data: args
             })

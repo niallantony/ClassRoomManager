@@ -69,14 +69,13 @@ const validateUser = [
             minLength: 8,
             minUppercase:1,
             minLowercase:1,
-            minSymbols:1 }).withMessage("Password should contain a mix of uppercase, lowercase and special characters"),
+            minSymbols:1 }).withMessage("Should contain a mix of uppercase, lowercase and special characters"),
     
 ]
 
 const newUserPost = [
     validateUser,
     (req,res) => {
-        console.log(req.body)
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).send({
