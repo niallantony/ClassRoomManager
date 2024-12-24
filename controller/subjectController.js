@@ -7,8 +7,17 @@ const exam_db = Exam();
 const getSubjects = async (req, res) => {
   const user = req.user;
   const subjects = await db.queryAll(user.teacher_id);
-  console.log("Subjects: ", subjects);
+  return res.json({
+    subjects: subjects,
+  });
+};
 
+const getSubjectNames = async (req, res) => {
+  const user = req.user;
+  const subjects = await db.queryNames(user.teacher_id);
+  subjects.forEach((subject) => {
+    subject["value"] = subject.subject_id;
+  });
   return res.json({
     subjects: subjects,
   });
@@ -18,7 +27,6 @@ const getSubject = async (req, res) => {
   const id = req.params.id;
   const teacher_id = req.user.teacher_id;
   const subject = await db.querySubjectInfoAll(teacher_id, id);
-  console.log(subject);
   const error = req.query.error || null;
   if (!subject) {
     return res.status(400).json({
@@ -38,6 +46,18 @@ const getExam = async (req, res) => {
     title: `Exam: ${exam.name}`,
     content: "exam",
     exam: exam,
+  });
+};
+
+const getWeeks = async (req, res) => {
+  const id = req.params.subject_id;
+  const weeks = await db.queryWeeks(id);
+  console.log(weeks);
+  weeks.forEach((week) => {
+    week["value"] = week.week;
+  });
+  res.json({
+    weeks: weeks,
   });
 };
 
@@ -61,7 +81,7 @@ const getWeek = async (req, res) => {
 const deleteSubject = async (req, res) => {
   try {
     const id = req.params.id;
-    const response = await db.deleteId(id);
+    await db.deleteId(id);
     res.json({
       message: "Successful",
     });
@@ -84,14 +104,6 @@ const deleteExam = async (req, res) => {
     console.log("Exam cannot be deleted");
     res.redirect(`/subjects/subject/${subject_id}?error=exam-delete`);
   }
-};
-
-const newSubjectGet = (req, res) => {
-  res.render("dashboard", {
-    title: "New Subject",
-    content: "new-subject",
-    values: {},
-  });
 };
 
 const editSubjectGet = async (req, res) => {
@@ -199,14 +211,6 @@ const newSubjectPost = [
   },
 ];
 
-const newExamGet = async (req, res) => {
-  res.render("dashboard", {
-    title: "New Exam",
-    content: "new-exam",
-    values: {},
-  });
-};
-
 const validateExam = [
   body("name").trim().exists().withMessage("Please enter a name"),
   body("marks")
@@ -222,6 +226,8 @@ const validateExam = [
     .isInt({ max: 100, min: 0 })
     .withMessage("Must be a number below 100"),
   body("type").trim().exists().withMessage("Please select exam type"),
+  body("week").toInt(),
+  body("subject_id").toInt(),
 ];
 
 const newExamPost = [
@@ -230,18 +236,15 @@ const newExamPost = [
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log("Errors found", errors);
-      return res.status(400).render("dashboard", {
-        title: "New Exam",
-        content: "new-exam",
-        errors: errors.array(),
-        values: req.body,
+      return res.status(400).json({
+        errors: errors,
       });
     }
-    const { name, marks, percent, type } = req.body;
-    const subject_id = +req.params.id;
+    const { name, marks, percent, type, subject_id, week } = req.body;
     try {
-      await exam_db.insert({
+      await exam_db.insertToWeek({
         name,
+        week,
         marks,
         subject_id,
         percent,
@@ -291,15 +294,14 @@ module.exports = {
   editSubjectGet,
   deleteSubject,
   getSubjects,
-  newSubjectGet,
   newSubjectPost,
   getSubject,
-  newExamGet,
   newExamPost,
   getExam,
   editExamGet,
   deleteExam,
   getWeek,
   editSubjectWeek,
+  getSubjectNames,
+  getWeeks,
 };
-

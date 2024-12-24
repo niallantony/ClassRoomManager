@@ -16,6 +16,7 @@ const Subject = () => {
     });
     return result;
   };
+
   const queryIdWithExams = async (teacher_id, id) => {
     const result = await prisma.subjects.findUnique({
       where: {
@@ -98,6 +99,34 @@ const Subject = () => {
     const res = await prisma.subjects.findMany({
       where: {
         teacher_id: id,
+      },
+    });
+    return res;
+  };
+
+  const queryNames = async (id) => {
+    const res = await prisma.subjects.findMany({
+      where: {
+        teacher_id: id,
+      },
+      select: {
+        name: true,
+        subject_id: true,
+      },
+    });
+    return res;
+  };
+
+  const queryWeeks = async (subject_id) => {
+    const res = await prisma.subj_week.findMany({
+      where: {
+        subject_id: subject_id,
+      },
+      orderBy: {
+        week: "asc",
+      },
+      select: {
+        week: true,
       },
     });
     return res;
@@ -195,9 +224,11 @@ const Subject = () => {
     queryId,
     queryIdWithExams,
     queryAll,
+    queryNames,
     insert,
     insertWithWeeks,
     queryWeek,
+    queryWeeks,
   };
 };
 
@@ -312,8 +343,30 @@ const User = () => {
 
 const Exam = () => {
   const insert = async (args) => {
-    console.log(args);
     const exam = await prisma.exams.create({ data: args });
+    return exam;
+  };
+
+  const insertToWeek = async (args) => {
+    const exam = await prisma.exams.create({
+      data: {
+        name: args.name,
+        marks: args.marks,
+        subject_id: args.subject_id,
+        percent: args.percent,
+        type: args.type,
+        subj_week: {
+          connect: [
+            {
+              subject_id_week: {
+                subject_id: args.subject_id,
+                week: args.week,
+              },
+            },
+          ],
+        },
+      },
+    });
     return exam;
   };
 
@@ -358,6 +411,7 @@ const Exam = () => {
     insert,
     queryId,
     deleteId,
+    insertToWeek,
   };
 };
 
@@ -453,4 +507,3 @@ module.exports = {
   Exam,
   Student,
 };
-

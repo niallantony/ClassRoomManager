@@ -1,19 +1,19 @@
 const { Router } = require("express");
 const {
   getSubjects,
-  newSubjectGet,
   newSubjectPost,
   getSubject,
   deleteSubject,
   editSubjectPost,
   getExam,
-  newExamGet,
   newExamPost,
   editExamGet,
   editExamPost,
   editSubjectWeek,
   deleteExam,
   getWeek,
+  getSubjectNames,
+  getWeeks,
 } = require("../controller/subjectController");
 
 const subjectRouter = Router();
@@ -27,19 +27,26 @@ const authenticateUser = (req, res, next) => {
 };
 
 subjectRouter.get("/", authenticateUser, getSubjects);
-subjectRouter.get("/new", authenticateUser, newSubjectGet);
-subjectRouter.post("/new", authenticateUser, newSubjectPost);
-subjectRouter.get("/subject/:id", getSubject);
+subjectRouter.post("/new", newSubjectPost);
+subjectRouter.get("/names", getSubjectNames);
+subjectRouter.get("/subject/:id", authenticateUser, getSubject);
 subjectRouter.put("/subject/:id", editSubjectPost);
+subjectRouter.get("/subject/:id/weeks", authenticateUser, getWeeks);
 subjectRouter.put("/subject/:id/week/:week", editSubjectWeek);
 subjectRouter.delete("/subject/:id", deleteSubject);
-subjectRouter.get("/subject/:id/exam/:exam_id", getExam);
-subjectRouter.get("/subject/:id/new-exam", newExamGet);
+subjectRouter.get("/subject/:id/exam/:exam_id", authenticateUser, getExam);
 subjectRouter.post("/subject/:id/new-exam", newExamPost);
-subjectRouter.get("/subject/:id/exam/:exam_id/edit", editExamGet);
+subjectRouter.get(
+  "/subject/:id/exam/:exam_id/edit",
+  authenticateUser,
+  editExamGet
+);
 subjectRouter.post("/subject/:id/exam/:exam_id/edit", editExamPost);
-subjectRouter.get("/subject/:id/exam/:exam_id/delete", deleteExam);
-subjectRouter.get("/subject/:id/week/:week", getWeek);
+subjectRouter.get(
+  "/subject/:id/exam/:exam_id/delete",
+  authenticateUser,
+  deleteExam
+);
+subjectRouter.get("/subject/:id/week/:week", authenticateUser, getWeek);
 
 module.exports = subjectRouter;
-
