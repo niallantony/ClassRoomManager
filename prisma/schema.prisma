@@ -18,6 +18,7 @@ model exams {
   type       String      @db.VarChar
   subjects   subjects    @relation(fields: [subject_id], references: [subject_id], onDelete: Cascade, onUpdate: NoAction)
   stud_exam  stud_exam[]
+  subj_week  subj_week[]   
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -77,6 +78,8 @@ model subj_week {
   subject_id  Int
   week        Int
   description String?
+  exam        exams?   @relation(fields: [exam_id], references: [exam_id], onDelete: NoAction, onUpdate: NoAction)
+  exam_id     Int?
   subjects    subjects @relation(fields: [subject_id], references: [subject_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([subject_id, week])
