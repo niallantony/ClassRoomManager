@@ -8,10 +8,11 @@ const prisma = new PrismaClient({
 });
 
 const Subject = () => {
-  const queryId = async (id) => {
+  const queryId = async (teacher_id, id) => {
     const result = await prisma.subjects.findUnique({
       where: {
         subject_id: +id,
+        teacher_id: +teacher_id,
       },
     });
     return result;
@@ -240,6 +241,7 @@ const Lesson = () => {
       },
       include: {
         subjects: true,
+        students: true,
       },
     });
     return res;
