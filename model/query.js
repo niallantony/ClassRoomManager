@@ -288,18 +288,15 @@ const Lesson = () => {
     return lesson;
   };
 
-  const update = async (id, args) => {
-    try {
-      const res = await prisma.lessons.update({
-        where: {
-          lesson_id: id,
-        },
-        data: args,
-      });
-      return res;
-    } catch (e) {
-      console.log(e);
-    }
+  const update = async (teacher_id, id, args) => {
+    const res = await prisma.lessons.update({
+      where: {
+        lesson_id: id,
+        teacher_id: teacher_id,
+      },
+      data: args,
+    });
+    return res;
   };
 
   return {

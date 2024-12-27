@@ -5,7 +5,7 @@ const {
   getLessons,
   getLesson,
   deleteLesson,
-  editLessonPost,
+  editLesson,
 } = require("../controller/lessonController");
 const { getStudents } = require("../controller/studentController");
 
@@ -13,9 +13,9 @@ const lessonRouter = Router();
 
 lessonRouter.get("/", getLessons);
 lessonRouter.get("/lesson/:id", getLesson);
+lessonRouter.put("/lesson/:id", editLesson);
 lessonRouter.post("/new", newLessonPost);
 lessonRouter.get("/lesson/:id/delete", deleteLesson);
-lessonRouter.post("/lesson/:id/edit", editLessonPost);
 lessonRouter.get("/lesson/:lesson_id/students", getStudents);
 
 module.exports = lessonRouter;

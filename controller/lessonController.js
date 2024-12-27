@@ -63,6 +63,18 @@ const validateLesson = [
   body("semester").toInt(),
 ];
 
+const validateEdit = [
+  body("attendance")
+    .trim()
+    .isNumeric()
+    .withMessage("Please enter a number")
+    .isInt({ gt: 0, lt: 100 })
+    .withMessage("Please enter a number between 0 - 100")
+    .toInt(),
+  body("name").isLength({ min: 1 }).withMessage("Please enter a name"),
+  body("class_start").notEmpty().withMessage("Please choose a start time"),
+];
+
 const returnDateTime = (timeString) => {
   const timeArray = timeString.split(":");
   const dateTime = new Date();
@@ -70,14 +82,8 @@ const returnDateTime = (timeString) => {
   return dateTime;
 };
 
-const returnTime = (dateTime) => {
-  return `${String(dateTime.getHours()).padStart(2, "0")}:${String(
-    dateTime.getMinutes()
-  ).padStart(2, "0")}`;
-};
-
-const editLessonPost = [
-  validateLesson,
+const editLesson = [
+  validateEdit,
   async (req, res) => {
     const user = req.user;
     const errors = validationResult(req);
@@ -86,27 +92,22 @@ const editLessonPost = [
         errors: errors,
       });
     }
-    const {
-      name,
-      semester,
-      subject_id,
-      attendance,
-      classroom,
-      class_start,
-      year,
-    } = req.body;
+    const { name, attendance, classroom, class_start } = req.body;
     try {
-      await db.update(+req.params.id, {
+      await db.update(+user.teacher_id, +req.params.id, {
         name,
-        semester,
-        subject_id,
         attendance,
         classroom,
         class_start: returnDateTime(class_start),
-        year,
       });
-      res.redirect(`/lessons/lesson/${req.params.id}`);
+      res.json({
+        message: "Successful",
+      });
     } catch (e) {
+      res.status(400).json({
+        message: "Unsuccessful",
+        errors: e,
+      });
       console.log(e);
     }
   },
@@ -154,7 +155,7 @@ const newLessonPost = [
 ];
 
 module.exports = {
-  editLessonPost,
+  editLesson,
   deleteLesson,
   getLesson,
   getLessons,
