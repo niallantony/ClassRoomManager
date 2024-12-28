@@ -36,10 +36,20 @@ const getLesson = async (req, res) => {
 };
 
 const deleteLesson = async (req, res) => {
-  const id = req.params.id;
-  const response = await db.deleteId(id);
-  console.log(response);
-  res.redirect("/lessons");
+  try {
+    const id = req.params.id;
+    const user = req.user;
+    const response = await db.deleteId(user.teacher_id, id);
+    console.log(response);
+    res.json({
+      message: "Successful",
+    });
+  } catch (e) {
+    res.json({
+      message: "Unsuccessful",
+      errors: e,
+    });
+  }
 };
 
 const validateLesson = [
@@ -60,7 +70,7 @@ const validateLesson = [
   body("name").isLength({ min: 1 }).withMessage("Please enter a name"),
   body("subject_id").notEmpty().withMessage("Please select a subject.").toInt(),
   body("class_start").notEmpty().withMessage("Please choose a start time"),
-  body("semester").toInt(),
+  body("semester").notEmpty().withMessage("Please enter a semester").toInt(),
 ];
 
 const validateEdit = [

@@ -279,9 +279,10 @@ const Lesson = () => {
     console.log(lesson);
   };
 
-  const deleteId = async (id) => {
+  const deleteId = async (teacher_id, id) => {
     const lesson = await prisma.lessons.delete({
       where: {
+        teacher_id: +teacher_id,
         lesson_id: +id,
       },
     });
