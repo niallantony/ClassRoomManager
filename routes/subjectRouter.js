@@ -7,8 +7,7 @@ const {
   editSubjectPost,
   getExam,
   newExamPost,
-  editExamGet,
-  editExamPost,
+  editExam,
   editSubjectWeek,
   deleteExam,
   getWeek,
@@ -34,14 +33,10 @@ subjectRouter.put("/subject/:id", editSubjectPost);
 subjectRouter.get("/subject/:id/weeks", authenticateUser, getWeeks);
 subjectRouter.put("/subject/:id/week/:week", editSubjectWeek);
 subjectRouter.delete("/subject/:id", deleteSubject);
-subjectRouter.get("/subject/:id/exam/:exam_id", authenticateUser, getExam);
+subjectRouter.get("/exam/:exam_id", authenticateUser, getExam);
+subjectRouter.put("/exam/:exam_id", authenticateUser, editExam);
+subjectRouter.delete("/exam/:exam_id", authenticateUser, deleteExam);
 subjectRouter.post("/subject/:id/new-exam", newExamPost);
-subjectRouter.get(
-  "/subject/:id/exam/:exam_id/edit",
-  authenticateUser,
-  editExamGet
-);
-subjectRouter.post("/subject/:id/exam/:exam_id/edit", editExamPost);
 subjectRouter.get(
   "/subject/:id/exam/:exam_id/delete",
   authenticateUser,

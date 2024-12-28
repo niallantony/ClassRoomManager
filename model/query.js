@@ -51,17 +51,14 @@ const Subject = () => {
             name: true,
             marks: true,
             percent: true,
-            subj_week: {
-              where: {
-                subject_id: +id,
-              },
-            },
+            subj_week: true,
           },
         },
         subj_week: {
           select: {
             week: true,
             description: true,
+            exam: true,
           },
         },
         lessons: {
@@ -90,6 +87,9 @@ const Subject = () => {
             subject_id: +subject_id,
             week: +week,
           },
+        },
+        include: {
+          exam: true,
         },
       });
       return weekData;
@@ -355,55 +355,79 @@ const Exam = () => {
         subject_id: args.subject_id,
         percent: args.percent,
         type: args.type,
-        subj_week: {
-          connect: [
-            {
-              subject_id_week: {
-                subject_id: args.subject_id,
-                week: args.week,
-              },
-            },
-          ],
-        },
+        week: args.week,
       },
     });
     return exam;
   };
 
-  const queryId = async (id) => {
-    const result = await prisma.exams.findUnique({
-      where: {
-        exam_id: +id,
-      },
-      include: {
-        subjects: true,
-      },
+  const queryId = async (teacher_id, id) => {
+    const result = await prisma.$transaction(async (ts) => {
+      const subject = await prisma.subjects.findFirst({
+        where: {
+          teacher_id: +teacher_id,
+          exams: {
+            some: {
+              exam_id: +id,
+            },
+          },
+        },
+      });
+      const exam = await ts.exams.findUnique({
+        where: {
+          exam_id: +id,
+          subject_id: subject.subject_id,
+        },
+        include: {
+          subjects: true,
+        },
+      });
+      return exam;
     });
     return result;
   };
 
-  const update = async (id, args) => {
-    try {
-      const res = await prisma.exams.update({
+  const update = async (teacher_id, exam_id, args) => {
+    return prisma.$transaction(async (ts) => {
+      const subject = await ts.subjects.findFirst({
         where: {
-          exam_id: id,
+          teacher_id: +teacher_id,
+          exams: {
+            some: {
+              exam_id: +exam_id,
+            },
+          },
+        },
+      });
+      const exam = await ts.exams.update({
+        where: {
+          exam_id: +exam_id,
         },
         data: args,
       });
-      return res;
-    } catch (e) {
-      console.log(e);
-    }
+      return exam;
+    });
   };
 
-  const deleteId = async (id) => {
-    console.log("Delete: ", id);
-    const res = await prisma.exams.delete({
-      where: {
-        exam_id: +id,
-      },
+  const deleteId = async (teacher_id, id) => {
+    return prisma.$transaction(async (ts) => {
+      const subject = ts.subjects.findFirst({
+        where: {
+          teacher_id: +teacher_id,
+          exams: {
+            some: {
+              exam_id: +id,
+            },
+          },
+        },
+      });
+      const exam = await ts.exams.delete({
+        where: {
+          exam_id: +id,
+        },
+      });
+      return exam;
     });
-    return res;
   };
 
   return {

@@ -40,11 +40,11 @@ const getSubject = async (req, res) => {
 };
 
 const getExam = async (req, res) => {
+  const user = req.user;
   const id = req.params.exam_id;
-  const exam = await exam_db.queryId(id);
-  res.render("dashboard", {
-    title: `Exam: ${exam.name}`,
-    content: "exam",
+  const exam = await exam_db.queryId(user.teacher_id, id);
+  console.log(exam);
+  res.json({
     exam: exam,
   });
 };
@@ -52,7 +52,6 @@ const getExam = async (req, res) => {
 const getWeeks = async (req, res) => {
   const id = req.params.subject_id;
   const weeks = await db.queryWeeks(id);
-  console.log(weeks);
   weeks.forEach((week) => {
     week["value"] = week.week;
   });
@@ -94,41 +93,22 @@ const deleteSubject = async (req, res) => {
 };
 
 const deleteExam = async (req, res) => {
-  const subject_id = req.params.id;
   try {
     const id = req.params.exam_id;
-    const response = await exam_db.deleteId(id);
+    const user = req.user;
+    const response = await exam_db.deleteId(user.teacher_id, id);
     console.log(response);
-    res.redirect(`/subjects/subject/${subject_id}`);
+    res.json({
+      message: "Successful",
+    });
   } catch (e) {
-    console.log("Exam cannot be deleted");
-    res.redirect(`/subjects/subject/${subject_id}?error=exam-delete`);
+    res.json({
+      errors: e,
+      message: "Unsuccessful",
+    });
   }
 };
 
-const editSubjectGet = async (req, res) => {
-  const id = req.params.id;
-  const subject = await db.queryId(id);
-  res.render("dashboard", {
-    title: `Edit Subject: ${subject.name}`,
-    content: "new-subject",
-    values: subject,
-  });
-};
-
-const editExamGet = async (req, res) => {
-  const user = req.user;
-  console.log(user);
-  const id = req.params.exam_id;
-  const exam = await exam_db.queryId(id);
-  const subjects = await db.queryAll(user.teacher_id);
-  res.render("dashboard", {
-    title: `Edit: ${exam.name}`,
-    content: "new-exam",
-    values: exam,
-    subjects: subjects,
-  });
-};
 const validateSubject = [
   body("name")
     .trim()
@@ -258,47 +238,47 @@ const newExamPost = [
   },
 ];
 
-const editExamPost = [
+const editExam = [
   validateExam,
   async (req, res) => {
+    const user = req.user;
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       console.log("Errors found", errors);
-      return res.status(400).render("dashboard", {
-        title: `Edit ${req.body.name}`,
-        content: "new-exam",
+      return res.status(400).json({
         errors: errors.array(),
-        values: req.body,
       });
     }
-    const { name, marks, percent, type } = req.body;
-    const subject_id = +req.params.id;
+    const { week, name, marks, percent, type } = req.body;
     try {
-      await exam_db.update(+req.params.exam_id, {
+      await exam_db.update(+user.teacher_id, +req.params.exam_id, {
         name,
         marks,
         percent,
         type,
+        week,
       });
-      console.log(`Updated Exam: ${name}`);
+      res.json({
+        message: "Successful",
+      });
     } catch (e) {
-      console.log(e);
+      res.status(400).json({
+        errors: e,
+        message: "Unsuccessful",
+      });
     }
-    res.redirect(`/subjects/subject/${subject_id}/`);
   },
 ];
 
 module.exports = {
   editSubjectPost,
-  editExamPost,
-  editSubjectGet,
+  editExam,
   deleteSubject,
   getSubjects,
   newSubjectPost,
   getSubject,
   newExamPost,
   getExam,
-  editExamGet,
   deleteExam,
   getWeek,
   editSubjectWeek,
