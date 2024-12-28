@@ -18,6 +18,10 @@ model exams {
   type       String      @db.VarChar
   subjects   subjects    @relation(fields: [subject_id], references: [subject_id], onDelete: Cascade, onUpdate: NoAction)
   stud_exam  stud_exam[]
+  subj_week  subj_week   @relation(fields: [subject_id, week], references: [subject_id, week], onDelete: Cascade, onUpdate: NoAction)   
+  week       Int
+
+  @@unique([subject_id, week])
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
@@ -77,6 +81,7 @@ model subj_week {
   subject_id  Int
   week        Int
   description String?
+  exam        exams?   
   subjects    subjects @relation(fields: [subject_id], references: [subject_id], onDelete: Cascade, onUpdate: NoAction)
 
   @@id([subject_id, week])

@@ -3,7 +3,6 @@ const {
     newUserGet, 
     newUserPost,
     loginGet,
-    loggedInGet,
     logoutGet
 } = require("../controller/userController")
 const passport = require('passport');
@@ -17,7 +16,7 @@ router.get('/login', loginGet);
 router.post('/login', 
     passport.authenticate("local", {
         successRedirect:'/dash',
-        failureRedirect:'/no'
+        failureRedirect:'/notfound'
     }) 
 );
 router.get('/logout', logoutGet);

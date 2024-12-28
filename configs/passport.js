@@ -11,6 +11,7 @@ passport.use(
         },
         async (email, password, done) => {
         try {
+            console.log("Email: ",email)
             const db = User();
             const user = await db.queryEmail(email);
             if (!user) {
@@ -20,6 +21,7 @@ passport.use(
             if (!match) {
                 return done(null, false, {message: "Incorrect password"});
             }
+            console.log(user)
             return done(null, user);
         } catch(err) {
             done(err);
@@ -40,3 +42,4 @@ passport.deserializeUser(async (id, done) => {
         done(err); 
     }
 })
+

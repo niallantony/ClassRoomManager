@@ -4,6 +4,7 @@ const {
  } = require("../model/query")
 const bcrypt = require("bcryptjs")
 
+const db = User()
 
 
 const newUserGet = (req, res) => {
@@ -27,7 +28,7 @@ const logoutGet = (req, res, next) => {
         if (err) next(err)
         req.session.regenerate(function(err) {
             if (err) next(err)
-            res.redirect('/')
+            res.status(200).json({message: "Successfully Logged Out"}) 
         })
     })
 }
@@ -50,7 +51,13 @@ const validateUser = [
     }),
     body("lastname").trim(),
     body("email").trim()
-        .isEmail().withMessage("Please enter a valid e-mail"),
+        .isEmail().withMessage("Please enter a valid e-mail").bail()
+        .custom(async (value) => {
+            user = await db.queryEmail(value)
+            if (user) {
+                throw new Error('Email already exists')
+            }
+        }),
     body("vpassword").custom((value, {req}) => {
         if(value !== req.body.password) {
             throw new Error('Passwords must match')
@@ -62,7 +69,7 @@ const validateUser = [
             minLength: 8,
             minUppercase:1,
             minLowercase:1,
-            minSymbols:1 }).withMessage("Password should contain a mix of uppercase, lowercase and special characters"),
+            minSymbols:1 }).withMessage("Should contain a mix of uppercase, lowercase and special characters"),
     
 ]
 
@@ -71,11 +78,8 @@ const newUserPost = [
     (req,res) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            return res.status(400).render("layout", {
-                title: "New User",
-                content:"new-user",
+            return res.status(400).send({
                 errors: errors.array(),
-                values: req.body
             });
         }
         const {firstname, lastname, email, password } = req.body;
@@ -95,7 +99,7 @@ const newUserPost = [
         } catch (e) {
             console.log(e);
         }
-        res.redirect('/');
+        res.redirect('/')
     }
 ]
 

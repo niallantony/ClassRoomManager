@@ -1,9 +1,0 @@
-<div class="exam">
-    <h2><%= exam.name %></h2>
-    <a href="/subjects/subject/<%=exam.subject_id%>"> <%=exam.subjects.name %></a>
-    <p>Points : <%=exam.marks%> - <%=exam.percent%> % </p>
-    <div class="button-container">
-        <button class="clickable" onclick="window.location='/subjects/subject/<%=exam.subject_id%>/exam/<%=exam.exam_id%>/edit'">Edit</button>
-        <button class="delete" onclick="window.location='/subjects/subject/<%=exam.subject_id%>/exam/<%=exam.exam_id%>/delete'">Delete</button>
-    </div>
-</div>
