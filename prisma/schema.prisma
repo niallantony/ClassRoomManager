@@ -31,6 +31,7 @@ model lessons {
   name        String
   semester    Int        @db.SmallInt
   subject_id  Int
+  forceactive Boolean    @default(false)
   attendance  Int        @db.SmallInt
   classroom   String?    @db.VarChar
   class_start DateTime   @db.Time(6)
