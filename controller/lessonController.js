@@ -1,7 +1,6 @@
 const { body, validationResult } = require("express-validator");
 const { Subject, Lesson, Student } = require("../model/query");
 
-const subjectdb = Subject();
 const db = Lesson();
 const student_db = Student();
 
@@ -11,17 +10,39 @@ const getLessons = async (req, res) => {
   console.log(lessons);
   const values = [];
   lessons.forEach((lesson) => {
+    let active = false;
+    if (lesson.forceactive === true) {
+      active = true;
+    } else if (isActive(lesson.year, lesson.semester)) {
+      active = true;
+    }
     values.push({
       lesson_id: lesson.lesson_id,
       name: lesson.name,
       year_semester: `${lesson.year}/${lesson.semester}`,
       subject: lesson.subjects.name,
       students: lesson.students.length,
+      active: active,
     });
   });
   res.json({
     lessons: values,
   });
+};
+
+const isActive = (year, semester) => {
+  const now = new Date();
+  const months = [
+    [2, 3, 4, 5, 6, 7],
+    [8, 9, 10, 11],
+  ];
+  console.log("Given:", year, "Month Range:", months[semester - 1]);
+  console.log("Year:", now.getFullYear(), "Month:", now.getMonth());
+  return (
+    (now.getFullYear() === year &&
+      months[semester - 1].includes(now.getMonth())) ||
+    (now.getFullYear() === year + 1 && now.getMonth() < 3 && semester === 2)
+  );
 };
 
 const getLesson = async (req, res) => {
@@ -102,13 +123,14 @@ const editLesson = [
         errors: errors,
       });
     }
-    const { name, attendance, classroom, class_start } = req.body;
+    const { name, attendance, classroom, class_start, forceactive } = req.body;
     try {
       await db.update(+user.teacher_id, +req.params.id, {
         name,
         attendance,
         classroom,
         class_start: returnDateTime(class_start),
+        forceactive,
       });
       res.json({
         message: "Successful",
@@ -141,6 +163,7 @@ const newLessonPost = [
       classroom,
       class_start,
       year,
+      forceactive,
     } = req.body;
     try {
       await db.insert({
@@ -152,6 +175,7 @@ const newLessonPost = [
         class_start: returnDateTime(class_start),
         year,
         semester,
+        forceactive,
       });
       res.json({
         message: "Successful",
@@ -171,4 +195,3 @@ module.exports = {
   getLessons,
   newLessonPost,
 };
-
