@@ -489,17 +489,15 @@ const Student = () => {
     return res;
   };
 
-  const getInLesson = async (lesson_id) => {
+  const getInLesson = async (teacher_id, lesson_id) => {
     const res = await prisma.students.findMany({
       where: {
         lessons: {
           some: {
             lesson_id: lesson_id,
+            teacher_id: +teacher_id,
           },
         },
-      },
-      include: {
-        lessons: true,
       },
     });
     return res;
@@ -514,6 +512,7 @@ const Student = () => {
     });
     return res;
   };
+
   return {
     deleteId,
     insert,

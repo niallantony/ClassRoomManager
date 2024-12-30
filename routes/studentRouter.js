@@ -1,22 +1,27 @@
 const { Router } = require("express");
-const { 
-    getNewStudent,
-    postNewStudent,
-    getStudents,
-    getStudent,
-    getEditStudent,
-    postEditStudent,
-    deleteStudent,
- } = require("../controller/studentController");
+const {
+  postNewStudent,
+  getStudents,
+  getStudent,
+  editStudent,
+  deleteStudent,
+} = require("../controller/studentController");
 
 const studentRouter = Router();
 
-studentRouter.get('/new', getNewStudent)
-studentRouter.post('/new', postNewStudent)
-studentRouter.get('/:lesson_id', getStudents)
-studentRouter.get('/student/:student_id', getStudent)
-studentRouter.get('/student/:student_id/edit', getEditStudent)
-studentRouter.post('/student/:student_id/edit', postEditStudent)
-studentRouter.get('/student/:student_id/delete', deleteStudent)
+const authenticateUser = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return next();
+  } else {
+    return res.status(401).send({ message: "Unauthorised" });
+  }
+};
 
-module.exports = studentRouter
+studentRouter.post("/new", authenticateUser, postNewStudent);
+studentRouter.get("/:lesson_id", authenticateUser, getStudents);
+studentRouter.get("/student/:student_id", authenticateUser, getStudent);
+studentRouter.delete("/student/:student_id", authenticateUser, deleteStudent);
+studentRouter.put("/student/:student_id", authenticateUser, editStudent);
+
+module.exports = studentRouter;
+
