@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-const { Subject, Lesson, Student } = require("../model/query");
+const { Lesson, Student } = require("../model/query");
 
 const db = Lesson();
 const student_db = Student();
@@ -7,7 +7,6 @@ const student_db = Student();
 const getLessons = async (req, res) => {
   const user = req.user;
   const lessons = await db.queryAll(user.teacher_id);
-  console.log(lessons);
   const values = [];
   lessons.forEach((lesson) => {
     let active = false;
@@ -36,8 +35,6 @@ const isActive = (year, semester) => {
     [2, 3, 4, 5, 6, 7],
     [8, 9, 10, 11],
   ];
-  console.log("Given:", year, "Month Range:", months[semester - 1]);
-  console.log("Year:", now.getFullYear(), "Month:", now.getMonth());
   return (
     (now.getFullYear() === year &&
       months[semester - 1].includes(now.getMonth())) ||
@@ -61,7 +58,6 @@ const deleteLesson = async (req, res) => {
     const id = req.params.id;
     const user = req.user;
     const response = await db.deleteId(user.teacher_id, id);
-    console.log(response);
     res.json({
       message: "Successful",
     });
