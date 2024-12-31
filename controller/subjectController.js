@@ -120,8 +120,15 @@ const validateSubject = [
     .withMessage("Subject should be between 1-52 weeks"),
 ];
 
+const validateName = [
+  body("name")
+    .trim()
+    .isLength({ min: 1, max: 64 })
+    .withMessage("Name must be between 1 - 64 characters."),
+];
+
 const editSubjectPost = [
-  validateSubject,
+  validateName,
   async (req, res) => {
     const id = req.params.id;
     const errors = validationResult(req);
@@ -142,7 +149,10 @@ const editSubjectPost = [
         message: "Successful",
       });
     } catch (e) {
-      console.log(e);
+      res.json({
+        message: "Unsuccessful",
+        errors: e,
+      });
     }
   },
 ];
