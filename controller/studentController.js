@@ -8,10 +8,7 @@ const getStudent = async (req, res) => {
   const user = req.user;
   const student_id = req.params.student_id;
   const student = await db.queryId(+user.teacher_id, +student_id);
-  console.log(student);
-  res.render("dashboard", {
-    title: "New Student",
-    content: "student",
+  res.json({
     student: student,
   });
 };
@@ -126,4 +123,3 @@ module.exports = {
   editStudent,
   deleteStudent,
 };
-

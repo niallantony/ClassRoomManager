@@ -234,7 +234,7 @@ const Subject = () => {
 };
 
 const Lesson = () => {
-  const queryAll = async (id) => {
+  const queryAll = async (id, active) => {
     const res = await prisma.lessons.findMany({
       where: {
         teacher_id: id,
@@ -244,7 +244,29 @@ const Lesson = () => {
         students: true,
       },
     });
+    if (active) {
+      const active = [];
+      res.forEach((lesson) => {
+        if (isActive(lesson.year, lesson.semester) || lesson.forceactive) {
+          active.push(lesson);
+        }
+      });
+      return active;
+    }
     return res;
+  };
+
+  const isActive = (year, semester) => {
+    const now = new Date();
+    const months = [
+      [2, 3, 4, 5, 6, 7],
+      [8, 9, 10, 11],
+    ];
+    return (
+      (now.getFullYear() === year &&
+        months[semester - 1].includes(now.getMonth())) ||
+      (now.getFullYear() === year + 1 && now.getMonth() < 3 && semester === 2)
+    );
   };
 
   const getNames = async (id) => {

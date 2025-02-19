@@ -1,27 +1,22 @@
 const { body, validationResult } = require("express-validator");
 const { Lesson, Student } = require("../model/query");
+const { query } = require("../model/pool");
 
 const db = Lesson();
 const student_db = Student();
 
 const getLessons = async (req, res) => {
   const user = req.user;
-  const lessons = await db.queryAll(user.teacher_id);
+  const active = Object.keys(req.query).includes("find") ? false : true;
+  const lessons = await db.queryAll(user.teacher_id, active);
   const values = [];
   lessons.forEach((lesson) => {
-    let active = false;
-    if (lesson.forceactive === true) {
-      active = true;
-    } else if (isActive(lesson.year, lesson.semester)) {
-      active = true;
-    }
     values.push({
       lesson_id: lesson.lesson_id,
       name: lesson.name,
       year_semester: `${lesson.year}/${lesson.semester}`,
       subject: lesson.subjects.name,
       students: lesson.students.length,
-      active: active,
     });
   });
   res.json({
