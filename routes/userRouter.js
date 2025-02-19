@@ -1,24 +1,22 @@
 const { Router } = require("express");
-const { 
-    newUserGet, 
-    newUserPost,
-    loginGet,
-    logoutGet
-} = require("../controller/userController")
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy
+const { newUserPost, logoutGet } = require("../controller/userController");
+const passport = require("passport");
 
 const router = new Router();
 
-router.get('/new', newUserGet);
-router.post('/new', newUserPost);
-router.get('/login', loginGet);
-router.post('/login', 
-    passport.authenticate("local", {
-        successRedirect:'/dash',
-        failureRedirect:'/notfound'
-    }) 
-);
-router.get('/logout', logoutGet);
+router.post("/new", newUserPost);
+router.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return res.status(500).json({ error: "Server Error" });
+    if (!user) return res.status(401).json({ error: info.message });
+
+    req.login(user, (err) => {
+      if (err) return res.status(500).json({ error: "Login Failed" });
+      return res.json({ message: "login successful", user });
+    });
+  })(req, res, next);
+});
+router.get("/logout", logoutGet);
 
 module.exports = router;
+
