@@ -370,22 +370,49 @@ const Exam = () => {
   };
 
   const insertToWeek = async (args) => {
-    const exam = await prisma.exams.create({
-      data: {
-        name: args.name,
-        marks: args.marks,
-        subject_id: args.subject_id,
-        percent: args.percent,
-        type: args.type,
-        week: args.week,
-      },
+    const result = await prisma.$transaction(async (ts) => {
+      const exam = await ts.exams.create({
+        data: {
+          name: args.name,
+          marks: args.marks,
+          subject_id: args.subject_id,
+          percent: args.percent,
+          type: args.type,
+          week: args.week,
+        },
+      });
+
+      const lessons = await ts.lessons.findMany({
+        where: {
+          subject_id: args.subject_id,
+        },
+        include: {
+          students: true,
+        },
+      });
+      const studentExams = [];
+      lessons.forEach((lesson) => {
+        lesson.students.forEach((student) => {
+          studentExams.push({
+            student_id: student.student_id,
+            exam_id: exam.exam_id,
+            exam_name: exam.name,
+          });
+        });
+      });
+
+      if (studentExams.length > 0) {
+        await ts.stud_exam.createMany({
+          data: studentExams,
+        });
+      }
     });
-    return exam;
+    return result;
   };
 
   const queryId = async (teacher_id, id) => {
     const result = await prisma.$transaction(async (ts) => {
-      const subject = await prisma.subjects.findFirst({
+      const subject = await ts.subjects.findFirst({
         where: {
           teacher_id: +teacher_id,
           exams: {
@@ -411,7 +438,7 @@ const Exam = () => {
 
   const update = async (teacher_id, exam_id, args) => {
     return prisma.$transaction(async (ts) => {
-      const subject = await ts.subjects.findFirst({
+      await ts.subjects.findFirst({
         where: {
           teacher_id: +teacher_id,
           exams: {
@@ -463,15 +490,54 @@ const Exam = () => {
 
 const Student = () => {
   const insert = async (args) => {
-    const res = await prisma.students.create({
-      data: {
-        name: args.name,
-        student_id: args.student_id,
-        teacher_id: args.teacher_id,
-        lessons: {
-          connect: [{ lesson_id: args.lesson_id }],
+    const res = await prisma.$transaction(async (ts) => {
+      await ts.students.create({
+        data: {
+          name: args.name,
+          student_id: args.student_id,
+          teacher_id: args.teacher_id,
+          lessons: {
+            connect: [{ lesson_id: args.lesson_id }],
+          },
         },
-      },
+      });
+      const subject = await ts.lessons.findFirst({
+        where: {
+          lesson_id: args.lesson_id,
+        },
+        select: {
+          subject_id: true,
+        },
+      });
+      console.log("Subject");
+      console.log(subject);
+      const exams = await ts.exams.findMany({
+        where: {
+          subject_id: subject.subject_id,
+        },
+        select: {
+          exam_id: true,
+          name: true,
+        },
+      });
+      console.log("Exams");
+      console.log(exams);
+      const studentExams = [];
+      exams.forEach((exam) => {
+        studentExams.push({
+          exam_name: exam.name,
+          exam_id: exam.exam_id,
+          student_id: args.student_id,
+        });
+      });
+      console.log("Student Exams");
+      console.log(studentExams);
+      if (studentExams.length > 0) {
+        await ts.stud_exam.createMany({
+          data: studentExams,
+        });
+        console.log(created);
+      }
     });
     return res;
   };
@@ -535,7 +601,26 @@ const Student = () => {
     return res;
   };
 
+  const getExams = async (teacher_id, student_id) => {
+    const res = await prisma.$transaction(async (ts) => {
+      await ts.students.findFirst({
+        where: {
+          teacher_id: teacher_id,
+          student_id: student_id,
+        },
+      });
+      const exams = await ts.stud_exam.findMany({
+        where: {
+          student_id: student_id,
+        },
+      });
+      return exams;
+    });
+    return res;
+  };
+
   return {
+    getExams,
     deleteId,
     insert,
     queryId,

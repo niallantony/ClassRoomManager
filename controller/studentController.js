@@ -8,8 +8,10 @@ const getStudent = async (req, res) => {
   const user = req.user;
   const student_id = req.params.student_id;
   const student = await db.queryId(+user.teacher_id, +student_id);
+  const exams = await db.getExams(+user.teacher_id, +student_id);
   res.json({
     student: student,
+    exams: exams,
   });
 };
 
