@@ -58,6 +58,7 @@ const postNewStudent = [
         message: "Successful",
       });
     } catch (e) {
+      console.log(e);
       res.json({
         message: "Unsuccessful",
         errors: e,

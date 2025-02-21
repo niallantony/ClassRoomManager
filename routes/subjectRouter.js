@@ -13,6 +13,7 @@ const {
   getWeek,
   getSubjectNames,
   getWeeks,
+  getExams,
 } = require("../controller/subjectController");
 
 const subjectRouter = Router();
@@ -35,6 +36,7 @@ subjectRouter.put("/subject/:id/week/:week", editSubjectWeek);
 subjectRouter.delete("/subject/:id", deleteSubject);
 subjectRouter.get("/exam/:exam_id", authenticateUser, getExam);
 subjectRouter.put("/exam/:exam_id", authenticateUser, editExam);
+subjectRouter.get("/subject/:subject_id/exams", getExams);
 subjectRouter.delete("/exam/:exam_id", authenticateUser, deleteExam);
 subjectRouter.post("/subject/:id/new-exam", newExamPost);
 subjectRouter.get(

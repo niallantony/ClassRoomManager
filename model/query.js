@@ -369,6 +369,24 @@ const Exam = () => {
     return exam;
   };
 
+  const queryExams = async (teacher_id, subject_id) => {
+    const exams = await prisma.$transaction(async (ts) => {
+      await ts.subjects.findFirst({
+        where: {
+          teacher_id: teacher_id,
+          subject_id: subject_id,
+        },
+      });
+      const exams = await ts.exams.findMany({
+        where: {
+          subject_id: subject_id,
+        },
+      });
+      return exams;
+    });
+    return exams;
+  };
+
   const insertToWeek = async (args) => {
     const result = await prisma.$transaction(async (ts) => {
       const exam = await ts.exams.create({
@@ -482,6 +500,7 @@ const Exam = () => {
   return {
     update,
     insert,
+    queryExams,
     queryId,
     deleteId,
     insertToWeek,
@@ -509,8 +528,6 @@ const Student = () => {
           subject_id: true,
         },
       });
-      console.log("Subject");
-      console.log(subject);
       const exams = await ts.exams.findMany({
         where: {
           subject_id: subject.subject_id,
@@ -520,8 +537,6 @@ const Student = () => {
           name: true,
         },
       });
-      console.log("Exams");
-      console.log(exams);
       const studentExams = [];
       exams.forEach((exam) => {
         studentExams.push({
@@ -530,13 +545,10 @@ const Student = () => {
           student_id: args.student_id,
         });
       });
-      console.log("Student Exams");
-      console.log(studentExams);
       if (studentExams.length > 0) {
         await ts.stud_exam.createMany({
           data: studentExams,
         });
-        console.log(created);
       }
     });
     return res;

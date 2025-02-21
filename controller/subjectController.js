@@ -39,11 +39,19 @@ const getSubject = async (req, res) => {
   });
 };
 
+const getExams = async (req, res) => {
+  const user = req.user;
+  const id = req.params.subject_id;
+  const exams = await exam_db.queryExams(+user.teacher_id, +id);
+  res.json({
+    exams: exams,
+  });
+};
+
 const getExam = async (req, res) => {
   const user = req.user;
   const id = req.params.exam_id;
   const exam = await exam_db.queryId(user.teacher_id, id);
-  console.log(exam);
   res.json({
     exam: exam,
   });
@@ -294,4 +302,5 @@ module.exports = {
   editSubjectWeek,
   getSubjectNames,
   getWeeks,
+  getExams,
 };
