@@ -24,17 +24,24 @@ const getLessons = async (req, res) => {
   });
 };
 
-const isActive = (year, semester) => {
-  const now = new Date();
-  const months = [
-    [2, 3, 4, 5, 6, 7],
-    [8, 9, 10, 11],
-  ];
-  return (
-    (now.getFullYear() === year &&
-      months[semester - 1].includes(now.getMonth())) ||
-    (now.getFullYear() === year + 1 && now.getMonth() < 3 && semester === 2)
+const getResults = async (req, res) => {
+  const user = req.user;
+  const lesson_id = +req.params.lesson_id;
+  const exams = await db.getExams(+user.teacher_id, lesson_id);
+  const results = await Promise.all(
+    exams.map(async (exam) => {
+      const examResults = await db.getResults(
+        +user.teacher_id,
+        lesson_id,
+        exam.exam_id
+      );
+      return { [exam.exam_id]: examResults };
+    })
   );
+  const examResults = Object.assign({}, ...results);
+  res.json({
+    results: examResults,
+  });
 };
 
 const getLesson = async (req, res) => {
@@ -185,4 +192,5 @@ module.exports = {
   getLesson,
   getLessons,
   newLessonPost,
+  getResults,
 };

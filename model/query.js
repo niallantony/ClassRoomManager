@@ -256,6 +256,21 @@ const Lesson = () => {
     return res;
   };
 
+  const getExams = async (teacher_id, lesson_id) => {
+    const lesson = await prisma.lessons.findFirst({
+      where: {
+        teacher_id: teacher_id,
+        lesson_id: lesson_id,
+      },
+    });
+    const exams = await prisma.exams.findMany({
+      where: {
+        subject_id: lesson.subject_id,
+      },
+    });
+    return exams;
+  };
+
   const isActive = (year, semester) => {
     const now = new Date();
     const months = [
@@ -295,10 +310,39 @@ const Lesson = () => {
     return res;
   };
 
+  const getResults = async (teacher_id, lesson_id, exam_id) => {
+    const res = await prisma.$transaction(async (ts) => {
+      const lesson = await ts.lessons.findFirst({
+        where: {
+          teacher_id: teacher_id,
+          lesson_id: lesson_id,
+        },
+        include: {
+          students: true,
+        },
+      });
+      const results = await Promise.all(
+        lesson.students.map(async (student) => {
+          const studentResult = await ts.stud_exam.findFirst({
+            where: {
+              student_id: student.student_id,
+              exam_id: exam_id,
+            },
+            select: {
+              points: true,
+            },
+          });
+          return { [student.student_id]: studentResult };
+        })
+      );
+      return results;
+    });
+    return res;
+  };
+
   const insert = async (args) => {
-    console.log(args);
     const lesson = await prisma.lessons.create({ data: args });
-    console.log(lesson);
+    return lesson;
   };
 
   const deleteId = async (teacher_id, id) => {
@@ -324,11 +368,13 @@ const Lesson = () => {
 
   return {
     getNames,
+    getExams,
     update,
     deleteId,
     queryAll,
     queryId,
     insert,
+    getResults,
   };
 };
 
