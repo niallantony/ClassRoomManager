@@ -1,9 +1,10 @@
 const { body, validationResult } = require("express-validator");
-const { Lesson, Student } = require("../model/query");
+const { Lesson, Student, Exam } = require("../model/query");
 const { query } = require("../model/pool");
 
 const db = Lesson();
 const student_db = Student();
+const exam_db = Exam();
 
 const getLessons = async (req, res) => {
   const user = req.user;
@@ -41,6 +42,16 @@ const getResults = async (req, res) => {
   const examResults = Object.assign({}, ...results);
   res.json({
     results: examResults,
+  });
+};
+
+const putResults = async (req, res) => {
+  const user = req.user;
+  const body = req.body;
+  const exam = +body.exam;
+  const dbres = exam_db.updateGrades(+user.teacher_id, exam, req.body.results);
+  res.json({
+    response: dbres,
   });
 };
 
@@ -193,4 +204,5 @@ module.exports = {
   getLessons,
   newLessonPost,
   getResults,
+  putResults,
 };

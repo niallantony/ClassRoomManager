@@ -332,10 +332,11 @@ const Lesson = () => {
               points: true,
             },
           });
-          return { [student.student_id]: studentResult };
+          return { [student.student_id]: studentResult.points };
         })
       );
-      return results;
+      const resultsObject = Object.assign({}, ...results);
+      return resultsObject;
     });
     return res;
   };
@@ -431,6 +432,39 @@ const Exam = () => {
       return exams;
     });
     return exams;
+  };
+
+  const updateGrades = async (teacher_id, exam_id, grades) => {
+    const subject = await prisma.subjects.findFirst({
+      where: {
+        teacher_id: teacher_id,
+        exams: {
+          some: {
+            exam_id: exam_id,
+          },
+        },
+      },
+    });
+    if (!subject) {
+      return { error: "Unauthorised" };
+    }
+    const updated = await Promise.all(
+      Object.keys(grades).map(async (student) => {
+        const res = await prisma.stud_exam.update({
+          where: {
+            student_id_exam_id: {
+              exam_id: exam_id,
+              student_id: +student,
+            },
+          },
+          data: {
+            points: +grades[student],
+          },
+        });
+        return res;
+      })
+    );
+    return updated;
   };
 
   const insertToWeek = async (args) => {
@@ -550,6 +584,7 @@ const Exam = () => {
     queryId,
     deleteId,
     insertToWeek,
+    updateGrades,
   };
 };
 
