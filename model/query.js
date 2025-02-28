@@ -635,6 +635,45 @@ const Student = () => {
     return res;
   };
 
+  const insertNote = async (args) => {
+    const res = await prisma.stud_notes.create({
+      data: {
+        student_id: args.student_id,
+        added: args.added,
+        description: args.description,
+      },
+    });
+    return res;
+  };
+
+  const deleteNote = async (note_id) => {
+    const res = await prisma.stud_notes.delete({
+      where: {
+        note_id: note_id,
+      },
+    });
+    return res;
+  };
+
+  const updateNote = async (note_id, args) => {
+    const res = await prisma.stud_notes.update({
+      where: {
+        note_id: note_id,
+      },
+      data: args,
+    });
+    return res;
+  };
+
+  const queryStudentNotes = async (student_id) => {
+    const res = await prisma.stud_notes.findMany({
+      where: {
+        student_id: student_id,
+      },
+    });
+    return res;
+  };
+
   const queryExists = async (id) => {
     const res = await prisma.students.findUnique({
       where: {
@@ -652,6 +691,7 @@ const Student = () => {
       },
       include: {
         lessons: true,
+        stud_notes: true,
       },
     });
     return res;
@@ -720,6 +760,10 @@ const Student = () => {
     getInLesson,
     queryExists,
     update,
+    insertNote,
+    deleteNote,
+    updateNote,
+    queryStudentNotes,
   };
 };
 

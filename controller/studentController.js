@@ -32,6 +32,78 @@ const validateStudent = [
 
 const validateName = [body("name").trim().exists()];
 
+const validateNote = [
+  body("description")
+    .trim()
+    .exists()
+    .isLength({ min: 1 })
+    .withMessage("Please add a note"),
+];
+
+const postNewNote = [
+  validateNote,
+  async (req, res) => {
+    const errors = validationResult(req);
+    const student_id = +req.params.student_id;
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    const { description } = req.body;
+    try {
+      await db.insertNote({
+        description,
+        student_id,
+        added: new Date(),
+      });
+      res.json({
+        message: "Successful",
+      });
+    } catch (e) {
+      res.status(400).json({
+        message: "Unsuccessful",
+        errors: e,
+      });
+    }
+  },
+];
+
+const editNote = [
+  validateNote,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    const note_id = +req.params.note_id;
+    const { description } = req.body;
+    try {
+      await db.updateNote(note_id, {
+        description,
+      });
+      res.json({
+        message: "Successful",
+      });
+    } catch (e) {
+      res.status(400).json({
+        message: "Unsuccessful",
+        errors: e,
+      });
+    }
+  },
+];
+
+const deleteNote = async (req, res) => {
+  const id = req.params.note_id;
+  const response = await db.deleteNote(+id);
+  res.json({
+    message: response,
+  });
+};
+
 const postNewStudent = [
   validateStudent,
   validateName,
@@ -39,8 +111,6 @@ const postNewStudent = [
     const errors = validationResult(req);
     const user = req.user;
     if (!errors.isEmpty()) {
-      const lessons = await lesson_db.getNames(user.teacher_id);
-      console.log(lessons);
       return res.status(400).json({
         errors: errors.array(),
       });
@@ -125,4 +195,7 @@ module.exports = {
   getStudent,
   editStudent,
   deleteStudent,
+  postNewNote,
+  deleteNote,
+  editNote,
 };

@@ -62,12 +62,13 @@ model stud_exam {
 }
 
 model stud_notes {
+  note_id     Int      @id @default(autoincrement())
   student_id  Int
   added       DateTime @default(now()) @db.Timestamp(6)
   description String?
   students    students @relation(fields: [student_id], references: [student_id], onDelete: Cascade, onUpdate: NoAction)
 
-  @@id([student_id, added])
+  @@unique([student_id, added])
 }
 
 model students {

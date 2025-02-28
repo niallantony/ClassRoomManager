@@ -5,6 +5,9 @@ const {
   getStudent,
   editStudent,
   deleteStudent,
+  postNewNote,
+  deleteNote,
+  editNote,
 } = require("../controller/studentController");
 
 const studentRouter = Router();
@@ -22,6 +25,8 @@ studentRouter.get("/:lesson_id", authenticateUser, getStudents);
 studentRouter.get("/student/:student_id", authenticateUser, getStudent);
 studentRouter.delete("/student/:student_id", authenticateUser, deleteStudent);
 studentRouter.put("/student/:student_id", authenticateUser, editStudent);
+studentRouter.post("/student/:student_id/note", authenticateUser, postNewNote);
+studentRouter.delete("/note/:note_id", authenticateUser, deleteNote);
+studentRouter.put("/note/:note_id", authenticateUser, editNote);
 
 module.exports = studentRouter;
-
